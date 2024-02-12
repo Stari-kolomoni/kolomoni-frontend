@@ -39,13 +39,16 @@ export async function executeWithStdoutCapture(
     
     
     return new Promise<void>((resolve, reject) => {
-        process.on("close", () => {
-            resolve();
+        process.on("exit", (exitCode) => {
+            if (exitCode === 0) {
+                resolve();
+            } else {
+                reject(`Process exited with exit code ${exitCode}.`);
+            }
         });
     
         process.on("error", (reason) => {
-            console.error("Failed to execute with stdout capture: " + reason);
-            reject();
+            reject("Failed to execute with stdout capture: " + reason);
         });
     });
 }

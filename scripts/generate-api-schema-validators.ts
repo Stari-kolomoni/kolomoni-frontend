@@ -1,25 +1,29 @@
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
-import { fileURLToPath } from "node:url";
 import Ajv from "ajv";
 import * as TJS from "typescript-json-schema";
 import ajvStandalone from "ajv/dist/standalone";
 import { executeWithStdoutCapture, pathExists } from "./shared/utilities";
+import { API_LIBRARY_DIRECTORY_PATH, VALIDATION_DIRECTORY_PATH, REPOSITORY_ROOT_DIRECTORY_PATH } from "./shared/paths";
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-
-const REPOSITORY_ROOT_DIRECTORY_PATH = path.join(__dirname, "..");
-const VALIDATION_DIRECTORY_PATH = path.join(
-    REPOSITORY_ROOT_DIRECTORY_PATH,
-    "src/lib/api/validation"
-);
 const JSON_SCHEMAS_DIRECTORY_PATH = path.join(
     VALIDATION_DIRECTORY_PATH,
     "json-schemas"
 );
+
+const API_SCHEMA_TYPES_INPUT_FILE = path.join(
+    API_LIBRARY_DIRECTORY_PATH,
+    "schemaTypes.ts"
+);
+
+const API_TYPE_NAMES_TO_COMPILE_VALIDATORS_FOR: string[] = [
+    "UserInformationResponse",
+    "UserPermissionListResponse",
+    "UserLoginResponse",
+    "ErrorWithReasonResponse"
+];
+
 
 interface CompiledJsonSchema {
     typeName: string,
@@ -190,21 +194,10 @@ async function generateTypingsForValidators(
 
 
 async function main() {
-    const typeDefinitionFilePath = path.join(
-        REPOSITORY_ROOT_DIRECTORY_PATH,
-        "src/lib/api/types.ts"
-    );
-
-    const typeNames = [
-        "UserInformationResponse",
-        "UserPermissionListResponse",
-    ];
-
-
     console.log("Generating JSON schemas.");
     const compiledSchemas = await compileJsonSchemas(
-        typeDefinitionFilePath,
-        typeNames,
+        API_SCHEMA_TYPES_INPUT_FILE,
+        API_TYPE_NAMES_TO_COMPILE_VALIDATORS_FOR,
         JSON_SCHEMAS_DIRECTORY_PATH,
         REPOSITORY_ROOT_DIRECTORY_PATH
     );

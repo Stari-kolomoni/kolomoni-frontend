@@ -2,74 +2,106 @@ import * as readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import * as path from "node:path";
 import * as fs from "node:fs";
-import { fileURLToPath } from "node:url";
-import { executeWithStdoutCapture } from "./shared/utilities";
+import { executeWithStdoutCapture, pathExists } from "./shared/utilities";
+import { OPENAPI_SCHEMA_OUTPUT_FILE_PATH, REPOSITORY_ROOT_DIRECTORY_PATH } from "./shared/paths";
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const REPOSITORY_ROOT_DIRECTORY_PATH = path.join(__dirname, "..");
-
-
-const SCHEMA_OUTPUT_FILE_PATH_RELATIVE_TO_REPOSITORY_ROOT = "./src/lib/api/schema.d.ts";
-const SCHEMA_OUTPUT_FILE_PATH_ABSOLUTE = path.join(__dirname, "..", SCHEMA_OUTPUT_FILE_PATH_RELATIVE_TO_REPOSITORY_ROOT);
-
-const DEFAULT_API_SCHEMA_FILE_PATH = "./openapi.json";
+const DEFAULT_API_SCHEMA_INPUT_FILE_PATH = "./openapi.json";
 
 
 
-async function main() {
-    const reader = readline.createInterface(stdin, stdout);
+async function generateTypesFromOpenApiSchema(
+    openApiSchemaFilePath: string,
+    typeScriptDeclarationOutputFilePath: string,
+) {
+    // Don't ask me why we need to do this, but for some convoluted reason
+    // apparently openapi-typescript expects forward slashes.
+    openApiSchemaFilePath 
+        = openApiSchemaFilePath.replace(/\\/g, "/");
+    typeScriptDeclarationOutputFilePath 
+        = typeScriptDeclarationOutputFilePath.replace(/\\/g, "/");
 
-    console.debug(`__dirname: ${__dirname}`);
-    console.debug(`schema output file: ${SCHEMA_OUTPUT_FILE_PATH_ABSOLUTE}`);
-    console.debug();
 
-    let apiSpecificationPath = await reader.question(`Path to the OpenAPI schema JSON file [${DEFAULT_API_SCHEMA_FILE_PATH}]: `);
-
-    if (apiSpecificationPath === "") {
-        apiSpecificationPath = DEFAULT_API_SCHEMA_FILE_PATH;
+    if (!await pathExists(openApiSchemaFilePath)) {
+        throw new Error("Provided openApiSchemaFilePath does not exist.");
     }
 
-    if (!fs.existsSync(apiSpecificationPath)) {
-        console.error("Provided file does not exist.");
-        process.exit(1);
-    }
+    const inputPathRelativeToRoot
+        = path.relative(REPOSITORY_ROOT_DIRECTORY_PATH, openApiSchemaFilePath)
+            .replace(/\\/g, "/");
 
-    console.log(`Selected OpenAPI file: "${apiSpecificationPath}"`);
+    const outputPathRelativeToRoot 
+        = path.relative(REPOSITORY_ROOT_DIRECTORY_PATH, typeScriptDeclarationOutputFilePath)
+            .replace(/\\/g, "/");   
 
     console.log("Will generate TypeScript types from OpenAPI schema.");
-    console.log(`Output file: "${SCHEMA_OUTPUT_FILE_PATH_RELATIVE_TO_REPOSITORY_ROOT}" (relative to repository root).`);
+    console.log(`Input file: "${openApiSchemaFilePath}".`);
+    console.log(`Input file relative to repository root: "${inputPathRelativeToRoot}".`);
+    console.log(`Output file: "${typeScriptDeclarationOutputFilePath}".`);
+    console.log(`Output file relative to repository root: "${outputPathRelativeToRoot}".`);
+    console.log("Generating types.");
+
+
     await executeWithStdoutCapture(
         "yarn",
         [
             "openapi-typescript",
-            apiSpecificationPath,
+            inputPathRelativeToRoot,
             "--default-non-nullable",
             "--alphabetize",
             "--output",
-            SCHEMA_OUTPUT_FILE_PATH_RELATIVE_TO_REPOSITORY_ROOT,
+            outputPathRelativeToRoot,
         ],
         REPOSITORY_ROOT_DIRECTORY_PATH,
         "openapi-typscript"
     );
 
-    console.log("Schema regenerated, reformatting with ESLint.");
+    console.log("Types generated, reformatting file with ESLint.");
+
     await executeWithStdoutCapture(
         "yarn",
         [
             "eslint",
-            SCHEMA_OUTPUT_FILE_PATH_RELATIVE_TO_REPOSITORY_ROOT,
+            typeScriptDeclarationOutputFilePath,
             "--fix"
         ],
         REPOSITORY_ROOT_DIRECTORY_PATH,
         "ESLint"
     );
+}
+
+
+
+async function main() {
+    console.debug(`Repository root path: "${REPOSITORY_ROOT_DIRECTORY_PATH}"`);
+    console.debug();
+
+    const reader = readline.createInterface(stdin, stdout);
+    let openApiInputFilePath = await reader.question(`Path to the OpenAPI schema JSON file [${DEFAULT_API_SCHEMA_INPUT_FILE_PATH}]: `);
+    reader.close();   
+
+    if (openApiInputFilePath === "") {
+        openApiInputFilePath = DEFAULT_API_SCHEMA_INPUT_FILE_PATH;
+    }
+
+    if (!fs.existsSync(openApiInputFilePath)) {
+        console.error("Provided file path does not exist.");
+        process.exit(1);
+    }
+
+    if (!openApiInputFilePath.endsWith("json")) {
+        console.error("Provided file does not have the \".json\" extension.");
+        process.exit(2);
+    }
+
+    console.log(`Selected OpenAPI file: "${openApiInputFilePath}"`);
+
+    await generateTypesFromOpenApiSchema(
+        openApiInputFilePath,
+        OPENAPI_SCHEMA_OUTPUT_FILE_PATH,
+    );
 
     console.log("Done!");
-
-    reader.close();   
 }
 
 

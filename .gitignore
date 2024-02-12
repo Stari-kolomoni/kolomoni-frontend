@@ -20,3 +20,6 @@ vite.config.ts.timestamp-*
 ## IDEs
 .idea
 .vscode
+
+# Certain auto-generated files (but not all)
+src/lib/api/auto-generated/validation/json-schemas

@@ -45,18 +45,17 @@ module.exports = {
                 parser: "@typescript-eslint/parser"
             }
         },
+        // Auto-generated TypeScript types and ajv validators.
         {
-            files: ["src/lib/api/validation/**/*.js"],
+            files: [
+                "src/lib/api/auto-generated/**/*.js",
+                "src/lib/api/auto-generated/**/*.ts"
+            ],
             rules: {
                 "@typescript-eslint/no-unused-vars": "off",
-                "no-redeclare": "off"
-            }
-        },
-        {
-            files: ["src/lib/api/validation/*.d.ts"],
-            rules: {
+                "no-redeclare": "off",
                 "@typescript-eslint/no-explicit-any": "off"
             }
-        }
+        },
     ]
 };
