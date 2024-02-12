@@ -23,3 +23,4 @@ vite.config.ts.timestamp-*
 
 # Certain auto-generated files (but not all)
 src/lib/api/auto-generated/validation/json-schemas
+openapi.json
