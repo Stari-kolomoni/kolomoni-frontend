@@ -5,12 +5,12 @@
     import { get } from "svelte/store";
 
     const log = new Logger("login", CommonColors.CADMIUM_ORANGE);
+    const loginStateStore = loginStateContext.get();
 
 
     let username: string;
     let password: string;
 
-    const loginStateStore = loginStateContext.get();
 
     async function onLoginFormSubmit(
         event: { currentTarget: EventTarget & HTMLFormElement }
@@ -18,10 +18,9 @@
         log.info("User is submitting login form!");
 
         const loginState = get(loginStateStore);
+        const api = Api.nativeFetchWithLoginState(loginState);
 
-        const loginResponse = await Api.loginUser(
-            AmbientApiParameters.native(),
-            loginState,
+        const loginResponse = await api.loginUser(
             username,
             password
         );
