@@ -610,7 +610,7 @@ export function parseColor(color: string): Color {
 /**
  * A selection of pleasant console colours (generated using https://coolors.co).
  */
-export const CommonColors: Record<string, RGBAColor> = {
+export const CommonColors = {
     // noinspection JSUnusedGlobalSymbols
     LIGHT_GRAY: RGBAColor.fromHexCode("#CCDBDC"),
     OPAL: RGBAColor.fromHexCode("#9DC0BC"),

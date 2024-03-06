@@ -116,3 +116,40 @@ export function stripStringPrefixAndSuffix(value: string, prefix: string, suffix
     return modifiedString;
 }
 
+
+
+export function curryAsyncCallbackWithThrottling<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    C extends (...args: any[]) => Promise<void>
+>(
+    callback: C,
+    minimumIntervalMilliseconds: number
+): (...args: Parameters<C>) => Promise<void> {
+    let trailingTriggerTimeout: number | null = null;
+    let hasPendingTrigger: boolean = false;
+
+    return async function (this: unknown, ...args: Parameters<C>): Promise<void> {
+
+        if (trailingTriggerTimeout === null) {
+            callback.call(this, args);
+
+            // We set up a timeout that will only trigger if 
+            // another call is attempted while we're on cooldown.
+            trailingTriggerTimeout = window.setTimeout(
+                () => {
+                    if (hasPendingTrigger) {
+                        callback.apply(this, args);
+                    }
+
+                    trailingTriggerTimeout = null;
+                },
+                minimumIntervalMilliseconds
+            );
+        } else {
+            // We set up the trailing call here: the caller wanted to perform
+            // a call, but we're on cooldown. Therefore we mark the call as pending,
+            // triggering it from the timeout when the cooldown expires.
+            hasPendingTrigger = true;
+        }
+    };
+}
