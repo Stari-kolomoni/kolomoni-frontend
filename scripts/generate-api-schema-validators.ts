@@ -70,7 +70,9 @@ async function compileJsonSchemas(
 
         const program = TJS.getProgramFromFiles(
             [typeFilePath],
-            {},
+            {
+                strict: true,
+            },
             repositoryRootDirectoryPath,
         );
 
