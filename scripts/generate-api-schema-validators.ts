@@ -21,7 +21,9 @@ const API_TYPE_NAMES_TO_COMPILE_VALIDATORS_FOR: string[] = [
     "UserInformationResponse",
     "UserPermissionListResponse",
     "UserLoginResponse",
-    "ErrorWithReasonResponse"
+    "ErrorWithReasonResponse",
+    "SearchRequest",
+    "SearchResponse"
 ];
 
 

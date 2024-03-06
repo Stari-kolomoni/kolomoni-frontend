@@ -1,7 +1,7 @@
 import { PUBLIC_BASE_API_URL } from "$env/static/public";
 import { MissingAuthenticationError, StatusCodeError } from "$lib/errors";
-import type { UserInformationResponse, UserLoginRequest, UserLoginResponse } from "./schemaTypes";
-import { validateUserInformationResponse, validateUserLoginResponse } from "./schemaValidators";
+import type { SearchRequest, SearchResponse, UserInformationResponse, UserLoginRequest, UserLoginResponse } from "./schemaTypes";
+import { validateSearchResponse, validateUserInformationResponse, validateUserLoginResponse } from "./schemaValidators";
 
 export class AmbientApiParameters {
     public readonly fetcher: typeof fetch;
@@ -29,6 +29,16 @@ export class UserLoginState {
     ) {
         this.accessToken = accessToken;
     }
+
+
+    public static withAccessToken(accessToken: string): UserLoginState {        
+        return new UserLoginState(accessToken);
+    }
+
+    public static withoutAuthentication(): UserLoginState {
+        return new UserLoginState(null);
+    }
+
 
     public getAccessToken(): string | null {
         return this.accessToken;
@@ -110,21 +120,57 @@ async function fetchWithContext(
     return response;
 }
 
-export const Api = {
-    loginUser: async (
+
+export class Api {
+    private ambientApiParameters: AmbientApiParameters;
+    private userLoginState: UserLoginState;
+
+    constructor(
         ambientApiParameters: AmbientApiParameters,
-        loginState: UserLoginState,
+        userLoginState: UserLoginState
+    ) {
+        this.ambientApiParameters = ambientApiParameters;
+        this.userLoginState = userLoginState;
+    }
+
+
+    static withoutAuthentication(ambientApiParameters: AmbientApiParameters): Api {
+        return new Api(ambientApiParameters, UserLoginState.withoutAuthentication());
+    }
+
+    static withAccessToken(
+        ambientApiParameters: AmbientApiParameters,
+        accessToken: string,
+    ): Api {
+        return new Api(ambientApiParameters, UserLoginState.withAccessToken(accessToken))
+    }
+
+    static nativeFetchWithLoginState(
+        userLoginState: UserLoginState
+    ): Api {
+        return new Api(AmbientApiParameters.native(), userLoginState)
+    }
+
+    static withLoginState(
+        ambientApiParameters: AmbientApiParameters,
+        userLoginState: UserLoginState
+    ): Api {
+        return new Api(ambientApiParameters, userLoginState)
+    }
+
+
+    public async loginUser(
         username: string,
         password: string,
-    ): Promise<UserLoginResponse> => {
+    ): Promise<UserLoginResponse> {
         const bodyContent: UserLoginRequest = {
             username,
             password
         };
 
         const response = await fetchWithContext(
-            ambientApiParameters,
-            loginState,
+            this.ambientApiParameters,
+            this.userLoginState,
             {
                 endpoint: "/login",
                 method: "POST",
@@ -136,15 +182,12 @@ export const Api = {
         validateUserLoginResponse(responseJson);
 
         return responseJson;
-    },
+    }
 
-    getCurrentUserInformation: async (
-        ambientApiParameters: AmbientApiParameters,
-        loginState: UserLoginState,
-    ): Promise<UserInformationResponse> => {
+    public async getCurrentUserInformation(): Promise<UserInformationResponse> {
         const response = await fetchWithContext(
-            ambientApiParameters,
-            loginState,
+            this.ambientApiParameters,
+            this.userLoginState,
             {
                 endpoint: "/users/me",
                 method: "GET",
@@ -154,6 +197,28 @@ export const Api = {
 
         const responseJson = await response.json();
         validateUserInformationResponse(responseJson);
+
+        return responseJson;
+    }
+
+    public async search(searchTerm: string): Promise<SearchResponse> {
+        const requestBody: SearchRequest = {
+            search_query: searchTerm
+        };
+
+        const response = await fetchWithContext(
+            this.ambientApiParameters,
+            this.userLoginState,
+            {
+                endpoint: "/dictionary/search",
+                method: "POST",
+                includeAccessToken: false,
+                body: JSON.stringify(requestBody)
+            }
+        );
+
+        const responseJson = await response.json();
+        validateSearchResponse(responseJson);
 
         return responseJson;
     }

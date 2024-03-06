@@ -39,4 +39,13 @@ export class ApiSchemaValidationError extends ApiError {
     public static fromTypeName(typeName: string): ApiSchemaValidationError {
         return new ApiSchemaValidationError(`Failed to validate API type ${typeName}.`);
     }
+
+    public static fromTypeNameAndReason(
+        typeName: string,
+        errorReason: string,
+    ): ApiSchemaValidationError {
+        return new ApiSchemaValidationError(
+            `Failed to validate API type ${typeName} due to: ${errorReason}.`
+        );
+    }
 }

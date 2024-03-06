@@ -7,3 +7,6 @@ export type UserLoginRequest = paths["/login"]["post"]["requestBody"]["content"]
 export type UserLoginResponse = paths["/login"]["post"]["responses"]["200"]["content"]["application/json"];
 
 export type ErrorWithReasonResponse = components["schemas"]["ErrorReasonResponse"];
+
+export type SearchRequest = paths["/dictionary/search"]["get"]["requestBody"]["content"]["application/json"];
+export type SearchResponse = paths["/dictionary/search"]["get"]["responses"]["200"]["content"]["application/json"];
