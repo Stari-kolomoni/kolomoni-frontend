@@ -1,6 +1,6 @@
 "use strict";
 export const UserLoginResponse = validate10;
-const schema11 = {"type":"object","properties":{"access_token":{"description":"JWT access token.","type":"string"},"refresh_token":{"description":"JWT refresh token.","type":"string"}},"required":["access_token","refresh_token"],"$schema":"http://json-schema.org/draft-07/schema#","$id":"#/schemas/UserLoginResponse"};
+const schema11 = {"type":"object","properties":{"access_token":{"description":"JWT access token.\nProvide in subsequent requests in the `Authorization` header as `Bearer your_token_here`.","type":"string"},"refresh_token":{"description":"JWT refresh token.","type":"string"}},"required":["access_token","refresh_token"],"$schema":"http://json-schema.org/draft-07/schema#","$id":"#/schemas/UserLoginResponse"};
 
 function validate10(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 /*# sourceURL="#/schemas/UserLoginResponse" */

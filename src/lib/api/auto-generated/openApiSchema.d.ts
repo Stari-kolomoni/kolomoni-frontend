@@ -5,9 +5,182 @@
 
 
 export interface paths {
+    "/dictionary/english": {
+    /**
+     * List all english words
+     * @description This endpoint returns a list of all english words.
+     *
+     * # Authentication
+     * Authentication is *not required* on this endpoint due to blanket grant of
+     * the `word:read` permission to unauthenticated users.
+     */
+        get: operations["get_all_english_words"];
+        /**
+     * Create an english word
+     * @description This endpoint creates a new english word in the dictionary.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word:create` permission.
+     */
+        post: operations["create_english_word"];
+    };
+    "/dictionary/english/{word_uuid}": {
+    /**
+     * Get an english word
+     * @description This endpoint returns information about a single english word from the dictionary.
+     *
+     * # Authentication
+     * Authentication is *not required* on this endpoint due to a blanket grant of
+     * the `word:read` permission to unauthenticated users.
+     */
+        get: operations["get_specific_english_word"];
+        /**
+     * Delete an english word
+     * @description This endpoint deletes an english word from the dictionary.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word:delete` permission.
+     */
+        delete: operations["delete_specific_english_word"];
+        /**
+     * Update an english word
+     * @description This endpoint updates an existing english word in the dictionary.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word:update` permission.
+     */
+        patch: operations["update_specific_english_word"];
+    };
+    "/dictionary/english/by-lemma/{word_lemma}": {
+    /**
+     * Find an english word by lemma
+     * @description This endpoint returns information about a single english word from the dictionary,
+     * but takes a lemma as a parameter instead of the word ID.
+     *
+     * Note that this is *not* intended as a search endpoint!
+     *
+     * # Authentication
+     * Authentication is *not required* on this endpoint due to a blanket grant of
+     * the `word:read` permission to unauthenticated users.
+     */
+        get: operations["get_specific_english_word_by_lemma"];
+    };
+    "/dictionary/search": {
+    /**
+     * Search the dictionary
+     * @description This endpoint performs a fuzzy search across the entire dictionary
+     * and returns a list of english and slovene word results.
+     *
+     * # Authentication
+     * Authentication is not required on this endpoint.
+     */
+        get: operations["perform_search"];
+    };
+    "/dictionary/slovene": {
+    /**
+     * List all slovene words
+     * @description This endpoint returns a list of all slovene words.
+     *
+     * # Authentication
+     * Authentication is *not required* on this endpoint due to blanket grant of
+     * the `word:read` permission to unauthenticated users.
+     */
+        get: operations["get_all_slovene_words"];
+        /**
+     * Create a slovene word
+     * @description This endpoint creates a new slovene word in the dictionary.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word:create` permission.
+     */
+        post: operations["create_slovene_word"];
+    };
+    "/dictionary/slovene/{word_uuid}": {
+    /**
+     * Get a slovene word
+     * @description This endpoint returns information about a single slovene word from the dictionary.
+     *
+     * # Authentication
+     * Authentication is *not required* on this endpoint due to a blanket grant of
+     * the `word:read` permission to unauthenticated users.
+     */
+        get: operations["get_specific_slovene_word"];
+        /**
+     * Delete a slovene word
+     * @description This endpoint deletes a slovene word from the dictionary.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word:delete` permission.
+     */
+        delete: operations["delete_specific_slovene_word"];
+        /**
+     * Update a slovene word
+     * @description This endpoint updates an existing slovene word in the dictionary.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word:update` permission.
+     */
+        patch: operations["update_specific_slovene_word"];
+    };
+    "/dictionary/slovene/by-lemma/{word_lemma}": {
+    /**
+     * Fina a slovene word by lemma
+     * @description This endpoint returns information about a single slovene word from the dictionary,
+     * but takes a lemma as a parameter instead of the word ID.
+     *
+     * Note that this is *not* intended as a search endpoint!
+     *
+     * # Authentication
+     * Authentication is *not required* on this endpoint due to a blanket grant of
+     * the `word:read` permission to unauthenticated users.
+     */
+        get: operations["get_specific_slovene_word_by_lemma"];
+    };
+    "/dictionary/suggestion": {
+    /**
+     * Create a new translation suggestion
+     * @description This endpoint will create a new translation suggestion relationship
+     * between an english and a slovene word.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word.suggestion:create` permission.
+     */
+        post: operations["suggest_translation"];
+        /**
+     * Delete a translation suggestion
+     * @description This endpoint will remove a translation suggestion relationship
+     * between an english and a slovene word.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word.suggestion:delete` permission.
+     */
+        delete: operations["delete_suggestion"];
+    };
+    "/dictionary/translation": {
+    /**
+     * Create a new translation
+     * @description This endpoint will create a new translation relationship
+     * between an english and a slovene word. Note that this is different than
+     * a *translation suggestion*.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word.translation:create` permission.
+     */
+        post: operations["create_translation"];
+        /**
+     * Delete a translation
+     * @description This endpoint will remove a translation relationship
+     * between an english and a slovene word. Note that this is different than
+     * a *translation suggestion*.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `word.translation:delete` permission.
+     */
+        delete: operations["delete_translation"];
+    };
     "/login": {
     /**
-     * Create an access token.
+     * Login
      * @description This endpoint is the login method: it validates the credentials (username and password) and
      * gives the user an access token they can use in future requests to authenticate themselves.
      *
@@ -20,7 +193,7 @@ export interface paths {
     };
     "/login/refresh": {
     /**
-     * Refresh a user's access
+     * Refresh a login
      * @description The user must provide a refresh token given to them on an initial call to `/users/login`.
      * "Refreshing a login" does not invalidate the refresh token.
      *
@@ -39,97 +212,141 @@ export interface paths {
      * @description This endpoint returns a list of all registered users.
      *
      *
-     * # Required permissions
-     * This endpoint requires the `users.any:read` permission.
+     * # Authentication
+     * This endpoint requires authentication and the `users.any:read` permission.
      */
         get: operations["get_all_registered_users"];
         /**
      * Register a new user
      * @description This endpoint registers a new user with the provided username, display name and password.
-     * Only one user with the given username or display name can exist (both fields are required to be unique).
      *
-     * No authentication is required.
+     * Both the username and the display name must be unique across all users,
+     * i.e. no two users can share the same username or display name.
+     *
+     * # Authentication
+     * This endpoint does not require authentication.
      */
         post: operations["register_user"];
     };
     "/users/{user_id}": {
     /**
-     * Get a specific user's information
-     * @description This is a generic version of the `GET /users/me` endpoint, allowing you to see information
-     * about users other than yourself.
+     * Get a user's information
+     * @description This is an expanded version of the `GET /users/me` endpoint,
+     * allowing you to see information about users other than yourself.
      *
-     * *This endpoint requires the `users.any:read` permission.*
+     * # Authentication
+     * Authentication is *not required* on this endpoint due to a blanket grant of
+     * the `users.any:read` permission to unauthenticated users.
      */
         get: operations["get_specific_user_info"];
     };
     "/users/{user_id}/display_name": {
     /**
-     * Update a specific user's display name
-     * @description This is generic version of the `PATCH /users/me/display_name` endpoint, allowing a user
-     * with enough permissions to modify another user's display name.
+     * Update a user's display name
+     * @description This is generic version of the `PATCH /users/me/display_name` endpoint,
+     * allowing a user with enough permissions to modify another user's display name.
      *
-     * *This endpoint requires the `users.any:write` permission.*
+     * # Restrictions
+     * You can not modify your own roles on this endpoint.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `users.any:write` permission.
      */
         patch: operations["update_specific_user_display_name"];
     };
     "/users/{user_id}/permissions": {
     /**
-     * Get a specific user's permissions
-     * @description This is a generic version of the `GET /users/me/permissions` endpoint, allowing you
-     * to see others' permissions.
+     * Get a user's effective permissions
+     * @description Returns a list of effective permissions.
+     * The effective permission list depends on permissions that each of the user's roles provide.
      *
-     * *This endpoint requires the `users.any:read` permission.*
+     * This is a generic version of the `GET /users/me/permissions` endpoint,
+     * allowing you to see others' permissions.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `users.any:read` permission.
      */
-        get: operations["get_specific_user_permissions"];
+        get: operations["get_specific_user_effective_permissions"];
+    };
+    "/users/{user_id}/roles": {
+    /**
+     * Get a user's roles
+     * @description # Authentication
+     * Authentication is *not required* on this endpoint due to a blanket grant of
+     * the `users.any:read` permission to unauthenticated users.
+     */
+        get: operations["get_specific_user_roles"];
         /**
-     * Add permissions to user
-     * @description This endpoint allows users with enough permissions to add specific permissions to others.
-     * You can add a specific permission to the requested user *only if you have that permission*.
-     * If you do not, your request will be denied with a `403 Forbidden`.
+     * Add roles to a user
+     * @description This endpoint allows a user with enough permissions to add roles to another user.
      *
-     * *This endpoint requires the `users.any:write` permission.*
+     * # Restrictions
+     * You can not modify your own roles on this endpoint.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `users.any:write` permission.
+     * Additionally, you can not give out a role you do not have yourself – trying to do
+     * so will fail with `403 Forbidden`.
      */
-        post: operations["add_permissions_to_specific_user"];
+        post: operations["add_roles_to_specific_user"];
         /**
-     * Remove permissions from user
-     * @description This endpoint allows user with enough permissions to remove specific permissions from others.
-     * You can remove a specific permission from the requested user *only if you also have that permission*.
-     * If you do not, your request will be denied with a `403 Forbidden`.
+     * Removes roles from a user
+     * @description This endpoint allows a user with enough permission to remove roles from another user.
      *
-     * *This endpoint requires the `users.any:write` permission.*
+     * # Restrictions
+     * You can not modify your own roles on this endpoint.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `users.any:write` permission.
+     * Additionally, you can not remove a role you do not have yourself – trying to do
+     * so will fail with `403 Forbidden`.
      */
-        delete: operations["remove_permissions_from_specific_user"];
+        delete: operations["remove_roles_from_specific_user"];
     };
     "/users/me": {
     /**
-     * Get current user's information
+     * Get your user information
      * @description This endpoint returns the logged-in user's information.
      *
      *
-     * # Required permissions
-     * This endpoint requires the `users.self:read` permission.
+     * # Authentication
+     * This endpoint requires authentication and the `users.self:read` permission.
      */
         get: operations["get_current_user_info"];
     };
     "/users/me/display_name": {
     /**
-     * Change the current user's display name
+     * Change your display name
      * @description This endpoint allows you to change your own display name. Note that the display name
      * must be unique among all users, so your request may be denied with a `409 Conflict`
      * to indicate a display name collision.
      *
-     * # Required permissions
+     * # Authentication
      * This endpoint requires the `users.self:write` permission.
      */
         patch: operations["update_current_user_display_name"];
     };
     "/users/me/permissions": {
     /**
-     * Get current user's permissions
-     * @description # Required permissions
-     * This endpoint requires the `users.self:read` permission.
+     * Get your effective permissions
+     * @description This endpoint returns the logged-in user's effective permission list.
+     * The effective permission list depends on permissions that each of the user's roles provide.
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `users.self:read` permission.
      */
-        get: operations["get_current_user_permissions"];
+        get: operations["get_current_user_effective_permissions"];
+    };
+    "/users/me/roles": {
+    /**
+     * Get your roles
+     * @description This endpoint returns the logged-in user's role list.
+     *
+     *
+     * # Authentication
+     * This endpoint requires authentication and the `users.self:read` permission.
+     */
+        get: operations["get_current_user_roles"];
     };
 }
 
@@ -137,7 +354,119 @@ export type webhooks = Record<string, never>;
 
 export interface components {
     schemas: {
-    /**
+        Category: {
+            /** Format: date-time */
+            created_at: string;
+            english_name: string;
+            /** Format: int32 */
+            id: number;
+            /** Format: date-time */
+            last_modified_at: string;
+            slovene_name: string;
+        };
+        /**
+     * @example {
+     *   "created_at": "2023-06-27T20:34:27.217273Z",
+     *   "description": "Playable or non-playable character.",
+     *   "disambiguation": "character",
+     *   "id": "018dbe00-266e-7398-abd2-0906df0aa345",
+     *   "last_modified_at": "2023-06-27T20:34:27.217273Z",
+     *   "lemma": "adventurer",
+     *   "suggested_translations": [],
+     *   "translations": [
+     *     {
+     *       "created_at": "2023-06-27T20:34:27.217273Z",
+     *       "description": "Igrani ali neigrani liki, ki se odpravijo na pustolovščino.",
+     *       "disambiguation": "lik",
+     *       "id": "018dbe00-266e-7398-abd2-0906df0aa346",
+     *       "last_modified_at": "2023-06-27T20:34:27.217273Z",
+     *       "lemma": "pustolovec"
+     *     }
+     *   ]
+     * }
+     */
+        EnglishWord: {
+            /** @description A list of categories this word belongs in. */
+            categories: components["schemas"]["Category"][];
+            /**
+       * Format: date-time
+       * @description When the word was created.
+       */
+            created_at: string;
+            /**
+       * @description A short description of the word. Supports Markdown.
+       *
+       * TODO Will need special Markdown support for linking to other dictionary words
+       * and possibly autocomplete in the frontend editor.
+       */
+            description?: string | null;
+            /**
+       * @description If there are multiple similar words, the disambiguation
+       * helps distinguish the word from other words at a glance.
+       */
+            disambiguation?: string | null;
+            /** @description Internal UUID of the word. */
+            id: string;
+            /**
+       * Format: date-time
+       * @description When the word was last modified.
+       * This includes the last creation or deletion time of the
+       * suggestion or translation linked to this word.
+       */
+            last_modified_at: string;
+            /** @description An abstract or base form of the word. */
+            lemma: string;
+            /** @description Suggested slovene translations of this word. */
+            suggested_translations: components["schemas"]["SloveneWord"][];
+            /** @description Slovene translations of this word. */
+            translations: components["schemas"]["SloveneWord"][];
+        };
+        /**
+     * @example {
+     *   "description": "Playable or non-playable character.",
+     *   "disambiguation": "character",
+     *   "lemma": "adventurer"
+     * }
+     */
+        EnglishWordCreationRequest: {
+            description?: string | null;
+            disambiguation?: string | null;
+            lemma: string;
+        };
+        /**
+     * @example {
+     *   "word": {
+     *     "added_at": "2023-06-27T20:34:27.217273Z",
+     *     "description": "Playable or non-playable character.",
+     *     "disambiguation": "character",
+     *     "last_edited_at": "2023-06-27T20:34:27.217273Z",
+     *     "lemma": "adventurer",
+     *     "word_id": "018dbe00-266e-7398-abd2-0906df0aa345"
+     *   }
+     * }
+     */
+        EnglishWordCreationResponse: {
+            word: components["schemas"]["EnglishWord"];
+        };
+        EnglishWordFilters: {
+            /** Format: date-time */
+            last_modified_after?: string | null;
+        };
+        EnglishWordInfoResponse: {
+            word: components["schemas"]["EnglishWord"];
+        };
+        EnglishWordsListRequest: {
+            filters?: components["schemas"]["EnglishWordFilters"] | null;
+        };
+        EnglishWordsResponse: {
+            english_words: components["schemas"]["EnglishWord"][];
+        };
+        EnglishWordUpdateRequest: {
+            description?: string | null;
+            disambiguation?: string | null;
+            lemma?: string | null;
+        };
+        /**
      * @description Simple JSON-encodable response containing a single field: a `reason`.
      *
      * This is useful for specifying reasons when returning a HTTP status code
@@ -147,10 +476,167 @@ export interface components {
             /** @description Error reason. */
             reason: string;
         };
+        PingResponse: {
+            ok: boolean;
+        };
+        /**
+     * RegisteredUsersListResponse
+     * @description List of registered users.
+     * @example {
+     *   "users": [
+     *     {
+     *       "display_name": "Janez Novak",
+     *       "id": 1,
+     *       "joined_at": "2023-06-27T20:33:53.078789Z",
+     *       "last_active_at": "2023-06-27T20:34:27.253746Z",
+     *       "last_modified_at": "2023-06-27T20:34:27.217273Z",
+     *       "username": "janeznovak"
+     *     }
+     *   ]
+     * }
+     */
+        RegisteredUsersListResponse: {
+            users: components["schemas"]["UserInformation"][];
+        };
+        /**
+     * @example {
+     *   "search_query": "hit points"
+     * }
+     */
+        SearchRequest: {
+            /** @description Search query. */
+            search_query: string;
+        };
+        /**
+     * @example {
+     *   "search_results": {
+     *     "english_results": [],
+     *     "slovene_results": [
+     *       {
+     *         "categories": [],
+     *         "created_at": "2024-02-28T09:58:12.858681Z",
+     *         "description": "Živjo svet!",
+     *         "disambiguation": null,
+     *         "id": "018def26-7a7a-73d5-9885-cfbaee7ce955",
+     *         "last_modified_at": "2024-02-28T09:58:12.863905Z",
+     *         "lemma": "terna"
+     *       }
+     *     ]
+     *   }
+     * }
+     */
+        SearchResponse: {
+            search_results: components["schemas"]["SearchResults"];
+        };
+        SearchResults: {
+            english_results: components["schemas"]["EnglishWord"][];
+            slovene_results: components["schemas"]["SloveneWord"][];
+        };
+        /**
+     * @example {
+     *   "created_at": "2023-06-27T20:34:27.217273Z",
+     *   "description": "Igrani ali neigrani liki, ki se odpravijo na pustolovščino.",
+     *   "disambiguation": "lik",
+     *   "id": "018dbe00-266e-7398-abd2-0906df0aa345",
+     *   "last_modified_at": "2023-06-27T20:34:27.217273Z",
+     *   "lemma": "pustolovec"
+     * }
+     */
+        SloveneWord: {
+            categories: components["schemas"]["Category"][];
+            /**
+       * Format: date-time
+       * @description When the word was created.
+       */
+            created_at: string;
+            /** @description A short description of the word. Supports Markdown. */
+            description?: string | null;
+            /**
+       * @description If there are multiple similar words, the disambiguation
+       * helps distinguish the word from other words at a glance.
+       */
+            disambiguation?: string | null;
+            /** @description Internal UUID of the word. */
+            id: string;
+            /**
+       * Format: date-time
+       * @description When the word was last modified.
+       *
+       * TODO In the future, this might include last modification time
+       * of the linked suggestion and translation relationships.
+       */
+            last_modified_at: string;
+            /** @description An abstract or base form of the word. */
+            lemma: string;
+        };
+        /**
+     * @example {
+     *   "description": "Igrani ali neigrani liki, ki se odpravijo na pustolovščino.",
+     *   "disambiguation": "lik",
+     *   "lemma": "pustolovec"
+     * }
+     */
+        SloveneWordCreationRequest: {
+            description?: string | null;
+            disambiguation?: string | null;
+            lemma: string;
+        };
+        /**
+     * @example {
+     *   "word": {
+     *     "added_at": "2023-06-27T20:34:27.217273Z",
+     *     "description": "Igrani ali neigrani liki, ki se odpravijo na pustolovščino.",
+     *     "disambiguation": "lik",
+     *     "last_edited_at": "2023-06-27T20:34:27.217273Z",
+     *     "lemma": "pustolovec",
+     *     "word_id": "018dbe00-266e-7398-abd2-0906df0aa345"
+     *   }
+     * }
+     */
+        SloveneWordCreationResponse: {
+            word: components["schemas"]["SloveneWord"];
+        };
+        SloveneWordFilters: {
+            /** Format: date-time */
+            last_modified_after?: string | null;
+        };
+        SloveneWordInfoResponse: {
+            word: components["schemas"]["SloveneWord"];
+        };
+        SloveneWordsListRequest: {
+            filters?: components["schemas"]["SloveneWordFilters"] | null;
+        };
+        SloveneWordsResponse: {
+            slovene_words: components["schemas"]["SloveneWord"][];
+        };
+        SloveneWordUpdateRequest: {
+            description?: string | null;
+            disambiguation?: string | null;
+            lemma?: string | null;
+        };
+        TranslationDeletionRequest: {
+            english_word_id: string;
+            slovene_word_id: string;
+        };
+        TranslationRequest: {
+            english_word_id: string;
+            slovene_word_id: string;
+        };
+        TranslationSuggestionDeletionRequest: {
+            english_word_id: string;
+            slovene_word_id: string;
+        };
+        TranslationSuggestionRequest: {
+            english_word_id: string;
+            slovene_word_id: string;
+        };
         /**
      * @description User (API caller) request to change a user's display name.
      *
      * This struct is used as a request in the public API.
+     * @example {
+     *   "new_display_name": "Janez Novak Veliki"
+     * }
      */
         UserDisplayNameChangeRequest: {
             /** @description Display name to change to. */
@@ -169,6 +655,16 @@ export interface components {
      * @description Information about one user in particular.
      *
      * This struct is used as a response in the public API.
+     * @example {
+     *   "user": {
+     *     "display_name": "Janez Novak",
+     *     "id": 1,
+     *     "joined_at": "2023-06-27T20:33:53.078789Z",
+     *     "last_active_at": "2023-06-27T20:34:27.253746Z",
+     *     "last_modified_at": "2023-06-27T20:34:27.217273Z",
+     *     "username": "janeznovak"
+     *   }
+     * }
      */
         UserInfoResponse: {
             user: components["schemas"]["UserInformation"];
@@ -177,6 +673,14 @@ export interface components {
      * @description Information about a single user.
      *
      * This struct is used as part of a response in the public API.
+     * @example {
+     *   "display_name": "Janez Novak",
+     *   "id": 1,
+     *   "joined_at": "2023-06-27T20:33:53.078789Z",
+     *   "last_active_at": "2023-06-27T20:34:27.253746Z",
+     *   "last_modified_at": "2023-06-27T20:34:27.217273Z",
+     *   "username": "janeznovak"
+     * }
      */
         UserInformation: {
             /** @description Unique display name. */
@@ -205,12 +709,143 @@ export interface components {
             username: string;
         };
         /**
+     * @description Information with which to refresh a user's login, generating a new access token.
+     * @example {
+     *   "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTdGFyaSBLb2xvbW9uaSIsInN1YiI6IkFQSSB0b2tlbiIsImlhdCI6MTY4Nzk3MTMyMiwiZXhwIjoxNjg4NTc2MTIyLCJ1c2VybmFtZSI6InRlc3QiLCJ0b2tlbl90eXBlIjoicmVmcmVzaCJ9.Ze6DI5EZ-swXRQrMW3NIppYejclGbyI9D6zmYBWJMLk"
+     * }
+     */
+        UserLoginRefreshRequest: {
+            /**
+       * @description Refresh token to use to generate an access token.
+       *
+       * Token must not have expired to work.
+       */
+            refresh_token: string;
+        };
+        /**
+     * @description Response on successful login refresh.
+     * @example {
+     *   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTdGFyaSBLb2xvbW9uaSIsInN1YiI6IkFQSSB0b2tlbiIsImlhdCI6MTY4Nzk3MTMyMiwiZXhwIjoxNjg4MDU3NzIyLCJ1c2VybmFtZSI6InRlc3QiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIn0.ZnuhEVacQD_pYzkW9h6aX3eoRNOAs2-y3EngGBglxkk"
+     * }
+     */
+        UserLoginRefreshResponse: {
+            /** @description Newly-generated access token to use in future requests. */
+            access_token: string;
+        };
+        /**
+     * @description User login information.
+     * @example {
+     *   "password": "verysecurepassword",
+     *   "username": "sample_user"
+     * }
+     */
+        UserLoginRequest: {
+            /** @description Password. */
+            password: string;
+            /** @description Username to log in as. */
+            username: string;
+        };
+        /**
+     * @description Response on successful user login.
+     *
+     * Contains two tokens:
+     * - the `access_token` that should be appended to future requests and
+     * - the `refresh_token` that can be used on `POST /api/v1/users/login/refresh` to
+     * receive a new (fresh) request token.
+     *
+     * This works because the `refresh_token` has a longer expiration time.
+     * @example {
+     *   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTdGFyaSBLb2xvbW9uaSIsInN1YiI6IkFQSSB0b2tlbiIsImlhdCI6MTY4Nzk3MTMyMiwiZXhwIjoxNjg4MDU3NzIyLCJ1c2VybmFtZSI6InRlc3QiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIn0.ZnuhEVacQD_pYzkW9h6aX3eoRNOAs2-y3EngGBglxkk",
+     *   "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTdGFyaSBLb2xvbW9uaSIsInN1YiI6IkFQSSB0b2tlbiIsImlhdCI6MTY4Nzk3MTMyMiwiZXhwIjoxNjg4NTc2MTIyLCJ1c2VybmFtZSI6InRlc3QiLCJ0b2tlbl90eXBlIjoicmVmcmVzaCJ9.Ze6DI5EZ-swXRQrMW3NIppYejclGbyI9D6zmYBWJMLk"
+     * }
+     */
+        UserLoginResponse: {
+            /**
+       * @description JWT access token.
+       * Provide in subsequent requests in the `Authorization` header as `Bearer your_token_here`.
+       */
+            access_token: string;
+            /** @description JWT refresh token. */
+            refresh_token: string;
+        };
+        /**
      * @description Response containing a list of active permissions.
      *
      * This struct is used as a response in the public API.
+     * @example {
+     *   "permissions": [
+     *     "user.self:read",
+     *     "user.self:write",
+     *     "user.any:read"
+     *   ]
+     * }
      */
         UserPermissionsResponse: {
             permissions: string[];
+        };
+        /**
+     * @description User registration request provided by an API caller.
+     * @example {
+     *   "display_name": "Janez Novak",
+     *   "password": "perica_reže_raci_rep",
+     *   "username": "janeznovak"
+     * }
+     */
+        UserRegistrationRequest: {
+            /** @description Name to display as in the UI. */
+            display_name: string;
+            /** @description Password for this user account. */
+            password: string;
+            /** @description Username to register as (not the same as the display name). */
+            username: string;
+        };
+        /**
+     * @description API-serializable response upon successful user registration.
+     * Contains the newly-created user's information.
+     * @example {
+     *   "user": {
+     *     "display_name": "Janez Novak",
+     *     "id": 1,
+     *     "joined_at": "2023-06-27T20:33:53.078789Z",
+     *     "last_active_at": "2023-06-27T20:34:27.253746Z",
+     *     "last_modified_at": "2023-06-27T20:34:27.217273Z",
+     *     "username": "janeznovak"
+     *   }
+     * }
+     */
+        UserRegistrationResponse: {
+            user: components["schemas"]["UserInformation"];
+        };
+        /**
+     * @example {
+     *   "roles_to_add": [
+     *     "administrator"
+     *   ]
+     * }
+     */
+        UserRoleAddRequest: {
+            roles_to_add: string[];
+        };
+        /**
+     * @example {
+     *   "roles_to_remove": [
+     *     "administrator"
+     *   ]
+     * }
+     */
+        UserRoleRemoveRequest: {
+            roles_to_remove: string[];
+        };
+        /**
+     * @example {
+     *   "role_names": [
+     *     "user",
+     *     "administrator"
+     *   ]
+     * }
+     */
+        UserRolesResponse: {
+            role_names: string[];
         };
     };
     responses: never;
@@ -227,7 +862,896 @@ export type external = Record<string, never>;
 export interface operations {
 
     /**
-   * Create an access token.
+   * List all english words
+   * @description This endpoint returns a list of all english words.
+   *
+   * # Authentication
+   * Authentication is *not required* on this endpoint due to blanket grant of
+   * the `word:read` permission to unauthenticated users.
+   */
+    get_all_english_words: {
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["EnglishWordsListRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description A list of all english words. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["EnglishWordsResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:read` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Create an english word
+   * @description This endpoint creates a new english word in the dictionary.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word:create` permission.
+   */
+    create_english_word: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnglishWordCreationRequest"];
+            };
+        };
+        responses: {
+            /** @description The newly-created english word. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["EnglishWordCreationResponse"];
+                };
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:create` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description English word with the given lemma already exists. */
+            409: {
+                content: {
+                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                };
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Get an english word
+   * @description This endpoint returns information about a single english word from the dictionary.
+   *
+   * # Authentication
+   * Authentication is *not required* on this endpoint due to a blanket grant of
+   * the `word:read` permission to unauthenticated users.
+   */
+    get_specific_english_word: {
+        parameters: {
+            path: {
+                /** @description UUID of the english word. */
+                word_uuid: string;
+            };
+        };
+        responses: {
+            /** @description Information about the requested english word. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["EnglishWordInfoResponse"];
+                };
+            };
+            /** @description Invalid word UUID provided. */
+            400: {
+                content: {
+                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:read` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The requested english word does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Delete an english word
+   * @description This endpoint deletes an english word from the dictionary.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word:delete` permission.
+   */
+    delete_specific_english_word: {
+        parameters: {
+            path: {
+                /** @description UUID of the english word to delete. */
+                word_uuid: string;
+            };
+        };
+        responses: {
+            /** @description English word deleted. */
+            200: {
+                content: never;
+            };
+            /** @description Invalid word UUID provided. */
+            400: {
+                content: {
+                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:delete` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The given english word does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Update an english word
+   * @description This endpoint updates an existing english word in the dictionary.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word:update` permission.
+   */
+    update_specific_english_word: {
+        parameters: {
+            path: {
+                /** @description UUID of the english word. */
+                word_uuid: string;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnglishWordUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Updated english word. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["EnglishWordInfoResponse"];
+                };
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:update` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The requested english word does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Find an english word by lemma
+   * @description This endpoint returns information about a single english word from the dictionary,
+   * but takes a lemma as a parameter instead of the word ID.
+   *
+   * Note that this is *not* intended as a search endpoint!
+   *
+   * # Authentication
+   * Authentication is *not required* on this endpoint due to a blanket grant of
+   * the `word:read` permission to unauthenticated users.
+   */
+    get_specific_english_word_by_lemma: {
+        parameters: {
+            path: {
+                /** @description English word lemma to look up. */
+                word_lemma: string;
+            };
+        };
+        responses: {
+            /** @description Information about the requested english word. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["EnglishWordInfoResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:read` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The requested english word does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Search the dictionary
+   * @description This endpoint performs a fuzzy search across the entire dictionary
+   * and returns a list of english and slovene word results.
+   *
+   * # Authentication
+   * Authentication is not required on this endpoint.
+   */
+    perform_search: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Search results. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["SearchResponse"];
+                };
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * List all slovene words
+   * @description This endpoint returns a list of all slovene words.
+   *
+   * # Authentication
+   * Authentication is *not required* on this endpoint due to blanket grant of
+   * the `word:read` permission to unauthenticated users.
+   */
+    get_all_slovene_words: {
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SloveneWordsListRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description A list of all slovene words. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["SloveneWordsResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:read` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Create a slovene word
+   * @description This endpoint creates a new slovene word in the dictionary.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word:create` permission.
+   */
+    create_slovene_word: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SloveneWordCreationRequest"];
+            };
+        };
+        responses: {
+            /** @description The newly-created slovene word. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["SloveneWordCreationResponse"];
+                };
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:create` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Slovene word with the given lemma already exists. */
+            409: {
+                content: {
+                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                };
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Get a slovene word
+   * @description This endpoint returns information about a single slovene word from the dictionary.
+   *
+   * # Authentication
+   * Authentication is *not required* on this endpoint due to a blanket grant of
+   * the `word:read` permission to unauthenticated users.
+   */
+    get_specific_slovene_word: {
+        parameters: {
+            path: {
+                /** @description UUID of the slovene word. */
+                word_uuid: string;
+            };
+        };
+        responses: {
+            /** @description Information about the requested slovene word. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["SloveneWordInfoResponse"];
+                };
+            };
+            /** @description Invalid word UUID provided. */
+            400: {
+                content: {
+                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:read` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The requested slovene word does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Delete a slovene word
+   * @description This endpoint deletes a slovene word from the dictionary.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word:delete` permission.
+   */
+    delete_specific_slovene_word: {
+        parameters: {
+            path: {
+                /** @description UUID of the slovene word to delete. */
+                word_uuid: string;
+            };
+        };
+        responses: {
+            /** @description Slovene word deleted. */
+            200: {
+                content: never;
+            };
+            /** @description Invalid word UUID provided. */
+            400: {
+                content: {
+                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:delete` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The given slovene word does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Update a slovene word
+   * @description This endpoint updates an existing slovene word in the dictionary.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word:update` permission.
+   */
+    update_specific_slovene_word: {
+        parameters: {
+            path: {
+                /** @description UUID of the slovene word. */
+                word_uuid: string;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SloveneWordUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Updated slovene word. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["SloveneWordInfoResponse"];
+                };
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:update` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The requested slovene word does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Fina a slovene word by lemma
+   * @description This endpoint returns information about a single slovene word from the dictionary,
+   * but takes a lemma as a parameter instead of the word ID.
+   *
+   * Note that this is *not* intended as a search endpoint!
+   *
+   * # Authentication
+   * Authentication is *not required* on this endpoint due to a blanket grant of
+   * the `word:read` permission to unauthenticated users.
+   */
+    get_specific_slovene_word_by_lemma: {
+        parameters: {
+            path: {
+                /** @description Slovene word lemma to look up. */
+                word_lemma: string;
+            };
+        };
+        responses: {
+            /** @description Information about the requested slovene word. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["SloveneWordInfoResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word:read` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The requested slovene word does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Create a new translation suggestion
+   * @description This endpoint will create a new translation suggestion relationship
+   * between an english and a slovene word.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word.suggestion:create` permission.
+   */
+    suggest_translation: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TranslationSuggestionRequest"];
+            };
+        };
+        responses: {
+            /** @description The translation suggestion relationship has been created. */
+            200: {
+                content: never;
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word.suggestion:create` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The translation suggestion relationship already exists. */
+            409: {
+                content: {
+                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                };
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Delete a translation suggestion
+   * @description This endpoint will remove a translation suggestion relationship
+   * between an english and a slovene word.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word.suggestion:delete` permission.
+   */
+    delete_suggestion: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TranslationSuggestionDeletionRequest"];
+            };
+        };
+        responses: {
+            /** @description The translation suggestion relationship has been deleted. */
+            200: {
+                content: never;
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word.suggestion:delete` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The translation suggestion relationship does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Create a new translation
+   * @description This endpoint will create a new translation relationship
+   * between an english and a slovene word. Note that this is different than
+   * a *translation suggestion*.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word.translation:create` permission.
+   */
+    create_translation: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TranslationRequest"];
+            };
+        };
+        responses: {
+            /** @description The translation has been created. */
+            200: {
+                content: never;
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word.translation:create` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The translation already exists. */
+            409: {
+                content: {
+                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                };
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Delete a translation
+   * @description This endpoint will remove a translation relationship
+   * between an english and a slovene word. Note that this is different than
+   * a *translation suggestion*.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `word.translation:delete` permission.
+   */
+    delete_translation: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TranslationDeletionRequest"];
+            };
+        };
+        responses: {
+            /** @description The translation relationship has been deleted. */
+            200: {
+                content: never;
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `word.translation:delete` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The translation relationship does not exist. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Login
    * @description This endpoint is the login method: it validates the credentials (username and password) and
    * gives the user an access token they can use in future requests to authenticate themselves.
    *
@@ -239,29 +1763,27 @@ export interface operations {
     login: {
         requestBody: {
             content: {
-                /**
-         * @example {
-         *   "password": "verysecurepassword",
-         *   "username": "sample_user"
-         * }
-         */
-                "application/json": {
-                    /** @description Password. */
-                    password: string;
-                    /** @description Username to log in as. */
-                    username: string;
-                };
+                "application/json": components["schemas"]["UserLoginRequest"];
             };
         };
         responses: {
             /** @description Login successful. */
             200: {
                 content: {
+                    "application/json": components["schemas"]["UserLoginResponse"];
+                };
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
                     "application/json": {
-                        /** @description JWT access token. */
-                        access_token: string;
-                        /** @description JWT refresh token. */
-                        refresh_token: string;
+                        /** @description Error reason. */
+                        reason: string;
                     };
                 };
             };
@@ -278,7 +1800,7 @@ export interface operations {
         };
     };
     /**
-   * Refresh a user's access
+   * Refresh a login
    * @description The user must provide a refresh token given to them on an initial call to `/users/login`.
    * "Refreshing a login" does not invalidate the refresh token.
    *
@@ -288,35 +1810,28 @@ export interface operations {
     refresh_login: {
         requestBody: {
             content: {
-                /**
-         * @example {
-         *   "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTdGFyaSBLb2xvbW9uaSIsInN1YiI6IkFQSSB0b2tlbiIsImlhdCI6MTY4Nzk3MTMyMiwiZXhwIjoxNjg4NTc2MTIyLCJ1c2VybmFtZSI6InRlc3QiLCJ0b2tlbl90eXBlIjoicmVmcmVzaCJ9.Ze6DI5EZ-swXRQrMW3NIppYejclGbyI9D6zmYBWJMLk"
-         * }
-         */
-                "application/json": {
-                    /**
-           * @description Refresh token to use to generate an access token.
-           *
-           * Token must not have expired to work.
-           */
-                    refresh_token: string;
-                };
+                "application/json": components["schemas"]["UserLoginRefreshRequest"];
             };
         };
         responses: {
             /** @description Login refresh successful. */
             200: {
                 content: {
-                    "application/json": {
-                        /** @description Newly-generated access token to use in future requests. */
-                        access_token: string;
-                    };
+                    "application/json": components["schemas"]["UserLoginRefreshResponse"];
                 };
             };
-            /** @description Invalid refresh token. */
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
             400: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
             };
             /** @description Refresh token has expired. */
@@ -349,27 +1864,28 @@ export interface operations {
    * @description This endpoint returns a list of all registered users.
    *
    *
-   * # Required permissions
-   * This endpoint requires the `users.any:read` permission.
+   * # Authentication
+   * This endpoint requires authentication and the `users.any:read` permission.
    */
     get_all_registered_users: {
         responses: {
             /** @description List of registered users. */
             200: {
                 content: {
-                    "application/json": {
-                        users: components["schemas"]["UserInformation"][];
-                    };
+                    "application/json": components["schemas"]["RegisteredUsersListResponse"];
                 };
             };
-            /** @description Missing user authentication. */
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Missing `user.any:read` permission. */
+            /** @description Missing the `user.any:read` permission. */
             403: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
             };
             /** @description Internal server error. */
@@ -381,36 +1897,37 @@ export interface operations {
     /**
    * Register a new user
    * @description This endpoint registers a new user with the provided username, display name and password.
-   * Only one user with the given username or display name can exist (both fields are required to be unique).
    *
-   * No authentication is required.
+   * Both the username and the display name must be unique across all users,
+   * i.e. no two users can share the same username or display name.
+   *
+   * # Authentication
+   * This endpoint does not require authentication.
    */
     register_user: {
         requestBody: {
             content: {
-                /**
-         * @example {
-         *   "display_name": "Janez Novak",
-         *   "password": "perica_reže_raci_rep",
-         *   "username": "janeznovak"
-         * }
-         */
-                "application/json": {
-                    /** @description Name to display in the UI as. */
-                    display_name: string;
-                    /** @description Password for this user account. */
-                    password: string;
-                    /** @description Username to register as (not the same as the display name). */
-                    username: string;
-                };
+                "application/json": components["schemas"]["UserRegistrationRequest"];
             };
         };
         responses: {
             /** @description Registration successful. */
             200: {
                 content: {
+                    "application/json": components["schemas"]["UserRegistrationResponse"];
+                };
+            };
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
                     "application/json": {
-                        user: components["schemas"]["UserInformation"];
+                        /** @description Error reason. */
+                        reason: string;
                     };
                 };
             };
@@ -427,11 +1944,13 @@ export interface operations {
         };
     };
     /**
-   * Get a specific user's information
-   * @description This is a generic version of the `GET /users/me` endpoint, allowing you to see information
-   * about users other than yourself.
+   * Get a user's information
+   * @description This is an expanded version of the `GET /users/me` endpoint,
+   * allowing you to see information about users other than yourself.
    *
-   * *This endpoint requires the `users.any:read` permission.*
+   * # Authentication
+   * Authentication is *not required* on this endpoint due to a blanket grant of
+   * the `users.any:read` permission to unauthenticated users.
    */
     get_specific_user_info: {
         parameters: {
@@ -447,14 +1966,17 @@ export interface operations {
                     "application/json": components["schemas"]["UserInfoResponse"];
                 };
             };
-            /** @description Missing user authentication. */
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Missing `user.any:read` permission. */
+            /** @description Missing the `user.any:read` permission. */
             403: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
             };
             /** @description Requested user does not exist. */
@@ -468,11 +1990,15 @@ export interface operations {
         };
     };
     /**
-   * Update a specific user's display name
-   * @description This is generic version of the `PATCH /users/me/display_name` endpoint, allowing a user
-   * with enough permissions to modify another user's display name.
+   * Update a user's display name
+   * @description This is generic version of the `PATCH /users/me/display_name` endpoint,
+   * allowing a user with enough permissions to modify another user's display name.
    *
-   * *This endpoint requires the `users.any:write` permission.*
+   * # Restrictions
+   * You can not modify your own roles on this endpoint.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `users.any:write` permission.
    */
     update_specific_user_display_name: {
         parameters: {
@@ -483,11 +2009,6 @@ export interface operations {
         };
         requestBody: {
             content: {
-                /**
-         * @example {
-         *   "new_display_name": "Janez Novak Veliki"
-         * }
-         */
                 "application/json": components["schemas"]["UserDisplayNameChangeRequest"];
             };
         };
@@ -498,12 +2019,35 @@ export interface operations {
                     "application/json": components["schemas"]["UserDisplayNameChangeResponse"];
                 };
             };
-            /** @description Missing user authentication. */
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Missing `user.any:write` permission. */
+            /** @description Missing the `user.any:write` permission. */
             403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description User with the given ID does not exist. */
+            404: {
                 content: {
                     "application/json": components["schemas"]["ErrorReasonResponse"];
                 };
@@ -521,16 +2065,20 @@ export interface operations {
         };
     };
     /**
-   * Get a specific user's permissions
-   * @description This is a generic version of the `GET /users/me/permissions` endpoint, allowing you
-   * to see others' permissions.
+   * Get a user's effective permissions
+   * @description Returns a list of effective permissions.
+   * The effective permission list depends on permissions that each of the user's roles provide.
    *
-   * *This endpoint requires the `users.any:read` permission.*
+   * This is a generic version of the `GET /users/me/permissions` endpoint,
+   * allowing you to see others' permissions.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `users.any:read` permission.
    */
-    get_specific_user_permissions: {
+    get_specific_user_effective_permissions: {
         parameters: {
             path: {
-                /** @description ID of the user to get permissions for. */
+                /** @description ID of the user to get effective permissions for. */
                 user_id: number;
             };
         };
@@ -541,14 +2089,17 @@ export interface operations {
                     "application/json": components["schemas"]["UserPermissionsResponse"];
                 };
             };
-            /** @description Missing user authentication. */
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Missing `user.any:read` permission. */
+            /** @description Missing the `user.any:read` permission. */
             403: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
             };
             /** @description Requested user does not exist. */
@@ -562,54 +2113,108 @@ export interface operations {
         };
     };
     /**
-   * Add permissions to user
-   * @description This endpoint allows users with enough permissions to add specific permissions to others.
-   * You can add a specific permission to the requested user *only if you have that permission*.
-   * If you do not, your request will be denied with a `403 Forbidden`.
-   *
-   * *This endpoint requires the `users.any:write` permission.*
+   * Get a user's roles
+   * @description # Authentication
+   * Authentication is *not required* on this endpoint due to a blanket grant of
+   * the `users.any:read` permission to unauthenticated users.
    */
-    add_permissions_to_specific_user: {
+    get_specific_user_roles: {
         parameters: {
             path: {
-                /** @description ID of the user to add permissions to. */
+                /** @description ID of the user to query roles for. */
+                user_id: number;
+            };
+        };
+        responses: {
+            /** @description User role list. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["UserRolesResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `user.any:read` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description No user with provided ID. */
+            404: {
+                content: never;
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Add roles to a user
+   * @description This endpoint allows a user with enough permissions to add roles to another user.
+   *
+   * # Restrictions
+   * You can not modify your own roles on this endpoint.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `users.any:write` permission.
+   * Additionally, you can not give out a role you do not have yourself – trying to do
+   * so will fail with `403 Forbidden`.
+   */
+    add_roles_to_specific_user: {
+        parameters: {
+            path: {
+                /** @description ID of the user to add roles to. */
                 user_id: number;
             };
         };
         requestBody: {
             content: {
-                /**
-         * @example {
-         *   "permissions_to_add": [
-         *     "user.any:read",
-         *     "user.any:write"
-         *   ]
-         * }
-         */
-                "application/json": {
-                    permissions_to_add: string[];
-                };
+                "application/json": components["schemas"]["UserRoleAddRequest"];
             };
         };
         responses: {
-            /** @description Updated user permission list. */
+            /** @description Updated user role list. */
             200: {
                 content: {
-                    "application/json": components["schemas"]["UserPermissionsResponse"];
+                    "application/json": components["schemas"]["UserRolesResponse"];
                 };
             };
-            /** @description Invalid permission name. */
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
             400: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
             };
-            /** @description Missing user authentication. */
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Not allowed to modify. */
+            /** @description Missing the `user.any:write` permission. */
             403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The specified user does not exist. */
+            404: {
                 content: {
                     "application/json": components["schemas"]["ErrorReasonResponse"];
                 };
@@ -621,53 +2226,65 @@ export interface operations {
         };
     };
     /**
-   * Remove permissions from user
-   * @description This endpoint allows user with enough permissions to remove specific permissions from others.
-   * You can remove a specific permission from the requested user *only if you also have that permission*.
-   * If you do not, your request will be denied with a `403 Forbidden`.
+   * Removes roles from a user
+   * @description This endpoint allows a user with enough permission to remove roles from another user.
    *
-   * *This endpoint requires the `users.any:write` permission.*
+   * # Restrictions
+   * You can not modify your own roles on this endpoint.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `users.any:write` permission.
+   * Additionally, you can not remove a role you do not have yourself – trying to do
+   * so will fail with `403 Forbidden`.
    */
-    remove_permissions_from_specific_user: {
+    remove_roles_from_specific_user: {
         parameters: {
             path: {
-                /** @description ID of the user to remove permissions from. */
+                /** @description ID of the user to remove roles from. */
                 user_id: number;
             };
         };
         requestBody: {
             content: {
-                /**
-         * @example {
-         *   "permissions_to_remove": [
-         *     "user.any:write"
-         *   ]
-         * }
-         */
-                "application/json": {
-                    permissions_to_remove: string[];
-                };
+                "application/json": components["schemas"]["UserRoleRemoveRequest"];
             };
         };
         responses: {
-            /** @description Updated user permission list. */
+            /** @description Updated user role list. */
             200: {
                 content: {
-                    "application/json": components["schemas"]["UserPermissionsResponse"];
+                    "application/json": components["schemas"]["UserRolesResponse"];
                 };
             };
-            /** @description Invalid permission name. */
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
             400: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
             };
-            /** @description Missing user authentication. */
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Not allowed to modify. */
+            /** @description Missing the `user.any:write` permission. */
             403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description The specified user does not exist. */
+            404: {
                 content: {
                     "application/json": components["schemas"]["ErrorReasonResponse"];
                 };
@@ -679,29 +2296,51 @@ export interface operations {
         };
     };
     /**
-   * Get current user's information
+   * Get your user information
    * @description This endpoint returns the logged-in user's information.
    *
    *
-   * # Required permissions
-   * This endpoint requires the `users.self:read` permission.
+   * # Authentication
+   * This endpoint requires authentication and the `users.self:read` permission.
    */
     get_current_user_info: {
+        parameters: {
+            header: {
+                /**
+         * @description If specified, this header makes the server return `304 Not Modified` without content (instead of `200 OK` with the usual response) if the requested data hasn't changed since the specified timestamp.
+         *
+         *  See [this article on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) for more information about this conditional header.
+         * @example Wed, 21 Oct 2015 07:28:00 GMT
+         */
+                "If-Modified-Since": string;
+            };
+        };
         responses: {
-            /** @description Information about current user. */
+            /** @description Information about the current user (i.e. the user who owns the authentication token used in the request). */
             200: {
+                headers: {
+                    /** @description Last user modification time. Use this value for caching. */
+                    "Last-Modified"?: string;
+                };
                 content: {
                     "application/json": components["schemas"]["UserInfoResponse"];
                 };
             };
-            /** @description Missing user authentication. */
+            /** @description Resource hasn't been modified since the timestamp specified in the `If-Modified-Since` header. As such, this status code can only be returned if that header is provided in the request. */
+            304: {
+                content: never;
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Missing `user.self:read` permission. */
+            /** @description Missing the `user.self:read` permission. */
             403: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
             };
             /** @description The user no longer exists. */
@@ -715,12 +2354,12 @@ export interface operations {
         };
     };
     /**
-   * Change the current user's display name
+   * Change your display name
    * @description This endpoint allows you to change your own display name. Note that the display name
    * must be unique among all users, so your request may be denied with a `409 Conflict`
    * to indicate a display name collision.
    *
-   * # Required permissions
+   * # Authentication
    * This endpoint requires the `users.self:write` permission.
    */
     update_current_user_display_name: {
@@ -741,14 +2380,31 @@ export interface operations {
                     "application/json": components["schemas"]["UserDisplayNameChangeResponse"];
                 };
             };
-            /** @description Missing user authentication. */
+            /**
+       * @description Bad request due to an invalid JSON request body. Possible reasons:
+       * - `Content-Type` header is not specified or does not equal `application/json`.
+       * - Incorrect structure of the JSON body or invalid JSON in general.
+       * - Request body is too large (highly unlikely).
+       */
+            400: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Missing `user.self:write` permission. */
+            /** @description Missing the `user.self:write` permission. */
             403: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
             };
             /** @description User with given display name already exists. */
@@ -764,11 +2420,14 @@ export interface operations {
         };
     };
     /**
-   * Get current user's permissions
-   * @description # Required permissions
-   * This endpoint requires the `users.self:read` permission.
+   * Get your effective permissions
+   * @description This endpoint returns the logged-in user's effective permission list.
+   * The effective permission list depends on permissions that each of the user's roles provide.
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `users.self:read` permission.
    */
-    get_current_user_permissions: {
+    get_current_user_effective_permissions: {
         responses: {
             /** @description A list of your permissions. */
             200: {
@@ -776,15 +2435,57 @@ export interface operations {
                     "application/json": components["schemas"]["UserPermissionsResponse"];
                 };
             };
-            /** @description Missing user authentication. */
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
             401: {
                 content: never;
             };
-            /** @description Missing `user.self:read` permission. */
+            /** @description Missing the `user.self:read` permission. */
             403: {
                 content: {
-                    "application/json": components["schemas"]["ErrorReasonResponse"];
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
                 };
+            };
+            /** @description Internal server error. */
+            500: {
+                content: never;
+            };
+        };
+    };
+    /**
+   * Get your roles
+   * @description This endpoint returns the logged-in user's role list.
+   *
+   *
+   * # Authentication
+   * This endpoint requires authentication and the `users.self:read` permission.
+   */
+    get_current_user_roles: {
+        responses: {
+            /** @description The authenticated user's role list. */
+            200: {
+                content: {
+                    "application/json": components["schemas"]["UserRolesResponse"];
+                };
+            };
+            /** @description Missing user authentication, provide an `Authorization: Bearer your_token_here` header. */
+            401: {
+                content: never;
+            };
+            /** @description Missing the `user.any:read` permission. */
+            403: {
+                content: {
+                    "application/json": {
+                        /** @description Error reason. */
+                        reason: string;
+                    };
+                };
+            };
+            /** @description You do not exist. */
+            404: {
+                content: never;
             };
             /** @description Internal server error. */
             500: {

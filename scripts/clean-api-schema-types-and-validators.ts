@@ -6,8 +6,8 @@ import { OPENAPI_SCHEMA_OUTPUT_FILE_PATH, VALIDATION_DIRECTORY_PATH } from "./sh
 async function main() {
     console.log("This script CAN BE DESTRUCTIVE!");
     console.log(
-        "It should generally only clean the auto-generated directory, \
-        but it is your responsibility to make sure paths are correct." 
+        "It should generally only clean the auto-generated directory, "
+        + "but it is your responsibility to make sure paths are correct." 
     );
 
     console.log();
