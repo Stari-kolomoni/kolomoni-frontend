@@ -3,5 +3,5 @@ import { defineConfig } from "vite";
 
 // noinspection JSUnusedGlobalSymbols
 export default defineConfig({
-    plugins: [sveltekit()]
+    plugins: [sveltekit()],
 });

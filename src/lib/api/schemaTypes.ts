@@ -10,3 +10,6 @@ export type ErrorWithReasonResponse = components["schemas"]["ErrorReasonResponse
 
 export type SearchRequest = paths["/dictionary/search"]["get"]["requestBody"]["content"]["application/json"];
 export type SearchResponse = paths["/dictionary/search"]["get"]["responses"]["200"]["content"]["application/json"];
+
+export type EnglishWordResponse = paths["/dictionary/english/{word_uuid}"]["get"]["responses"]["200"]["content"]["application/json"];
+export type EnglishWord = components["schemas"]["EnglishWord"];

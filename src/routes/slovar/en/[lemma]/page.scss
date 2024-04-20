@@ -1,0 +1,29 @@
+// @use "$lib/style/_variables.scss" as vars;
+// @use "$lib/style/design-system/_typography.scss" as typography;
+
+.o-centered-canvas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.o-central-column {
+    width: 750px;
+}
+
+.c-heading {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+
+    &__lemma {
+        margin: 0;
+    }
+
+    &__disambiguation {
+        // color: vars.$body-text-lighter;
+        margin-left: 6px;
+
+        // font-size: typography.$font-size-larger-body-text;
+    }
+}

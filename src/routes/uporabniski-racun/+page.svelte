@@ -1,41 +1,35 @@
 <script lang="ts">
-    import { loginStateContext } from "$lib/contexts";
-    import { get } from "svelte/store";
-    import { AmbientApiParameters, Api } from "$lib/api";
+    import { userAuthenticationContext, userInfoContext } from "$lib/contexts";
+    import { UserAuthentication } from "$lib/api";
+    import { goto } from "$app/navigation";
+    import type { PageData } from "./$types";
+    import { onMount } from "svelte";
+    import { UserInfo } from "$lib/api/userInfo";
 
-    const loginStateStore = loginStateContext.get();
+    export let data: PageData;
 
-    async function retrieveUserInfo() {
-        const ambientApiParameters = AmbientApiParameters.native();
-        const loginState = get(loginStateStore);
+    const loginState = userAuthenticationContext.get();
+    const userInfo = userInfoContext.get();
 
-        const userInfo = await Api.getCurrentUserInformation(
-            ambientApiParameters,
-            loginState
-        );
 
-        return userInfo;
-    }
-
-    async function signOutUser() {
+    async function signOutUser(): Promise<void> {
         document.cookie = "accessToken=;Max-Age=0";
+        loginState.set(UserAuthentication.newWithoutAuthentication());
 
-        loginStateStore.update(
-            (store) => store.withUpdatedAccessToken(null)
-        );
+        userInfo.set(null);
 
         console.log("Logged out user!");
+        await goto("/prijava");
     }
+
+    onMount(() => {
+        const userInfoInstance = UserInfo.fromSerialized(data.userInfo);
+        userInfo.set(userInfoInstance);
+    });
 </script>
 
-{#await retrieveUserInfo()}
-    Izvajam zahtevek...
-{:then userInfo} 
-    <div>Uporabniško ime: {userInfo.user.username}</div>
-    <div>Prikazano ime: {userInfo.user.display_name}</div>
-    <div>Datum in čas registracije: {userInfo.user.joined_at}</div>
+<div>Uporabniško ime: {$userInfo?.username}</div>
+<div>Prikazano ime: {$userInfo?.displayName}</div>
+<div>Datum in čas registracije: {$userInfo?.joinedAt}</div>
 
-    <button on:click={signOutUser}>Odjava</button>
-{:catch error}
-    Prišlo je do napake: {error}
-{/await}
+<button on:click={signOutUser}>Odjava</button>

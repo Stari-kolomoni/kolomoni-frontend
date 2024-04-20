@@ -1,12 +1,13 @@
 <script lang="ts">
     import { Api } from "$lib/api";
-    import { loginStateContext } from "$lib/contexts";
+    import TextInput from "$lib/components/atoms/TextInput/TextInput.svelte";
+    import { userAuthenticationContext } from "$lib/contexts";
     import Logger, { CommonColors } from "$lib/logger";
     import { curryAsyncCallbackWithThrottling } from "$lib/utilities";
     import { get } from "svelte/store";
 
     const log = new Logger("login", CommonColors.CAMEL);
-    const loginStateStore = loginStateContext.get();
+    const loginStateStore = userAuthenticationContext.get();
 
 
     let searchBarText: string = "";
@@ -18,8 +19,8 @@
         log.info(`User is searching for: ${searchBarText}`);
 
         const loginState = get(loginStateStore);
-        const api = Api.nativeFetchWithLoginState(loginState);
-
+        const api = Api.newUsingNativeFetch(loginState);
+        
         const searchResults = await api.search(searchBarText);
 
         log.info("Got search results:");
@@ -39,10 +40,9 @@
 <p>odprti slovenski fantazijski slovar</p>
 
 <div>
-    <input
-        type="text"
-        id="search-input"
+    <TextInput
         bind:value={searchBarText}
         on:input={performThrottledSearch}
-    >
+        inputId="search-input"
+    ></TextInput>
 </div>

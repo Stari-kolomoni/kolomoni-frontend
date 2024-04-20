@@ -1,11 +1,16 @@
 <script lang="ts">
-    import { AmbientApiParameters, Api } from "$lib/api";
-    import { loginStateContext } from "$lib/contexts";
+    import { goto } from "$app/navigation";
+    import { Api, UserAuthentication } from "$lib/api";
+    import { UserInfo } from "$lib/api/userInfo";
+    import { userAuthenticationContext, userInfoContext } from "$lib/contexts";
     import Logger, { CommonColors } from "$lib/logger";
     import { get } from "svelte/store";
 
     const log = new Logger("login", CommonColors.CADMIUM_ORANGE);
-    const loginStateStore = loginStateContext.get();
+
+    const loginStateStore = userAuthenticationContext.get();
+    const userInfoStore = userInfoContext.get();
+
 
 
     let username: string;
@@ -18,23 +23,27 @@
         log.info("User is submitting login form!");
 
         const loginState = get(loginStateStore);
-        const api = Api.nativeFetchWithLoginState(loginState);
+        let api = Api.newUsingNativeFetch(loginState);
 
-        const loginResponse = await api.loginUser(
-            username,
-            password
-        );
+        const loginResponse = await api.loginUser(username, password);
 
 
         document.cookie 
             = `accessToken=${loginResponse.access_token}; max-age=86400; SameSite=strict; Secure`;
 
         loginStateStore.update(
-            (store) => store.withUpdatedAccessToken(loginResponse.access_token)
+            (store) => store.usingUpdatedAccessToken(loginResponse.access_token)
         );
 
+        api = Api.newUsingNativeFetch(UserAuthentication.newWithAuthentication(loginResponse.access_token));
+        const userInfo = await api.getCurrentUserInformation();
 
-        log.info("User is logged in!");
+        userInfoStore.set(UserInfo.fromApiResponse(userInfo));
+
+
+        log.info(`User ${userInfo.user.username} is logged in!`);
+
+        await goto("/");
     }
 </script>
 

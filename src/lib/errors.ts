@@ -42,10 +42,10 @@ export class ApiSchemaValidationError extends ApiError {
 
     public static fromTypeNameAndReason(
         typeName: string,
-        errorReason: string,
+        errorReason: Record<string, unknown>,
     ): ApiSchemaValidationError {
         return new ApiSchemaValidationError(
-            `Failed to validate API type ${typeName} due to: ${errorReason}.`
+            `Failed to validate API type ${typeName}. Reason: ${JSON.stringify(errorReason)}.`
         );
     }
 }

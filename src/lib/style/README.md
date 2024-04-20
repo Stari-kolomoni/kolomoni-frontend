@@ -1,0 +1,2 @@
+This project uses SCSS styles and adheres to the [Enduring CSS](https://ecss.benfrain.com) guide,
+which is very much worth a read, especially its chapter on [naming conventions](https://ecss.benfrain.com/chapter5.html#h-H2_1).

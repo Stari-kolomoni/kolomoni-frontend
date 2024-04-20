@@ -17,14 +17,7 @@ const API_SCHEMA_TYPES_INPUT_FILE = path.join(
     "schemaTypes.ts"
 );
 
-const API_TYPE_NAMES_TO_COMPILE_VALIDATORS_FOR: string[] = [
-    "UserInformationResponse",
-    "UserPermissionListResponse",
-    "UserLoginResponse",
-    "ErrorWithReasonResponse",
-    "SearchRequest",
-    "SearchResponse"
-];
+const API_TYPE_NAMES_REGEX = /export\s*type\s*(\w+)\s*=/gu;
 
 
 interface CompiledJsonSchema {
@@ -169,39 +162,78 @@ async function compileValidatorsFromSchemas(
     return compiledValidators;
 }
 
+
+const VALIDATOR_TYPE_TEMPLATE = `export function {TYPE_NAME}(
+    data: any,
+    {
+        instancePath,
+        parentData,
+        parentDataProperty,
+        rootData
+    }?: {
+        instancePath?: string;
+        parentData: any;
+        parentDataProperty: any;
+        rootData?: any;
+    }
+): boolean;
+
+export namespace {TYPE_NAME} {
+    export let errors: Record<string, any>;
+}
+`;
+
+
 async function generateTypingsForValidators(
     validators: CompiledValidator[],
-    repositoryRootDirectoryPath: string,
 ) {
     for (const validator of validators) {
-        const parentDirectoryPath = path.dirname(validator.validatorJsFilePath);
-
+        const parentDirectoryPath = path.dirname(validator.validatorJsFilePath);        
         const declarationFileName = `${validator.typeName}.d.ts`;
-        console.log(`[TypeScript Declaration Generator] Generating "${declarationFileName}".`);
 
-        await executeWithStdoutCapture(
-            "yarn",
-            [
-                "tsc",
-                "--allowJs",
-                "--declaration",
-                "--emitDeclarationOnly",
-                validator.validatorJsFilePath,
-                "--outDir",
-                parentDirectoryPath
-            ],
-            repositoryRootDirectoryPath,
-            "tsx"
+        console.log(`[TypeScript declaration generator] Outputting TypeScript declarations for "${declarationFileName}".`);
+        await fs.writeFile(
+            path.join(parentDirectoryPath, declarationFileName),
+            VALIDATOR_TYPE_TEMPLATE.replace(/{TYPE_NAME}/g, validator.typeName),
+            {
+                encoding: "utf-8",
+            }
         );
     }
 }
 
 
+async function collectApiTypeNamesToCompileValidatorsFor(
+    inputTypeScriptFilePath: string
+): Promise<string[]> {
+    const fileContent = await fs.readFile(inputTypeScriptFilePath, { encoding: "utf-8" });
+    const typeNameMatches = fileContent.matchAll(API_TYPE_NAMES_REGEX);
+
+    const parsedTypeNames: string[] = [];
+
+    for (const typeNameMatch of typeNameMatches) {
+        parsedTypeNames.push(typeNameMatch[1]);
+    }
+
+    return parsedTypeNames;
+}
+
+
 async function main() {
+    const apiTypeNamesToCompileValidatorsFor 
+        = await collectApiTypeNamesToCompileValidatorsFor(
+            API_SCHEMA_TYPES_INPUT_FILE
+        );
+
+    console.log(`Collected API type names from ${API_SCHEMA_TYPES_INPUT_FILE}:`);
+    for (const apiTypeName of apiTypeNamesToCompileValidatorsFor) {
+        console.log(`  - ${apiTypeName}`);
+    }
+
     console.log("Generating JSON schemas.");
     const compiledSchemas = await compileJsonSchemas(
         API_SCHEMA_TYPES_INPUT_FILE,
-        API_TYPE_NAMES_TO_COMPILE_VALIDATORS_FOR,
+        apiTypeNamesToCompileValidatorsFor,
         JSON_SCHEMAS_DIRECTORY_PATH,
         REPOSITORY_ROOT_DIRECTORY_PATH
     );
@@ -218,10 +250,7 @@ async function main() {
 
 
     console.log("Generating TypeScript declarations for validators.");
-    await generateTypingsForValidators(
-        compiledValidators,
-        REPOSITORY_ROOT_DIRECTORY_PATH
-    );
+    await generateTypingsForValidators(compiledValidators);
     console.log("Typings generated.");
 }
 

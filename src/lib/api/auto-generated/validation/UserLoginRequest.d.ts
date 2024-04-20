@@ -1,4 +1,4 @@
-export function UserLoginResponse(
+export function UserLoginRequest(
     data: any,
     {
         instancePath,
@@ -13,6 +13,6 @@ export function UserLoginResponse(
     }
 ): boolean;
 
-export namespace UserLoginResponse {
+export namespace UserLoginRequest {
     export let errors: Record<string, any>;
 }

@@ -5,8 +5,9 @@ import { UserPermissionListResponse as userPermissionListResponseValidator } fro
 import { ErrorWithReasonResponse as errorWithReasonResponseValidator } from "./auto-generated/validation/ErrorWithReasonResponse";
 import { UserLoginResponse as userLoginResponseValidator } from "./auto-generated/validation/UserLoginResponse";
 import { SearchResponse as searchResponseValidator } from "./auto-generated/validation/SearchResponse";
+import { EnglishWordResponse as englishWordResponseValidator } from "./auto-generated/validation/EnglishWordResponse";
 
-import type { ErrorWithReasonResponse, SearchResponse, UserInformationResponse, UserLoginResponse, UserPermissionListResponse } from "./schemaTypes";
+import type { EnglishWordResponse, ErrorWithReasonResponse, SearchResponse, UserInformationResponse, UserLoginResponse, UserPermissionListResponse } from "./schemaTypes";
 
 
 /***
@@ -16,19 +17,28 @@ import type { ErrorWithReasonResponse, SearchResponse, UserInformationResponse, 
 
 export function validateUserInformationResponse(content: unknown): asserts content is UserInformationResponse {
     if (!userInformationResponseValidator(content)) {
-        throw ApiSchemaValidationError.fromTypeName("UserInformationResponse");
+        throw ApiSchemaValidationError.fromTypeNameAndReason(
+            "UserInformationResponse",
+            userInformationResponseValidator.errors
+        );
     }
 }
 
 export function validateUserPermissionListResponse(content: unknown): asserts content is UserPermissionListResponse {
     if (!userPermissionListResponseValidator(content)) {
-        throw ApiSchemaValidationError.fromTypeName("UserPermissionListResponse");
+        throw ApiSchemaValidationError.fromTypeNameAndReason(
+            "UserPermissionListResponse",
+            userPermissionListResponseValidator.errors,
+        );
     }
 }
 
 export function validateUserLoginResponse(content: unknown): asserts content is UserLoginResponse {
     if (!userLoginResponseValidator(content)) {
-        throw ApiSchemaValidationError.fromTypeName("UserLoginResponse");
+        throw ApiSchemaValidationError.fromTypeNameAndReason(
+            "UserLoginResponse",
+            userLoginResponseValidator.errors
+        );
     }
 }
 
@@ -40,7 +50,10 @@ export function validateUserLoginResponse(content: unknown): asserts content is 
 
 export function validateErrorWithReasonResponse(content: unknown): asserts content is ErrorWithReasonResponse {
     if (!errorWithReasonResponseValidator(content)) {
-        throw ApiSchemaValidationError.fromTypeName("ErrorWithReasonResponse");
+        throw ApiSchemaValidationError.fromTypeNameAndReason(
+            "ErrorWithReasonResponse",
+            errorWithReasonResponseValidator.errors
+        );
     }
 }
 
@@ -53,6 +66,25 @@ export function validateErrorWithReasonResponse(content: unknown): asserts conte
 
 export function validateSearchResponse(content: unknown): asserts content is SearchResponse {
     if (!searchResponseValidator(content)) {
-        throw ApiSchemaValidationError.fromTypeNameAndReason("SearchResponse", JSON.stringify(searchResponseValidator.errors));
+        throw ApiSchemaValidationError.fromTypeNameAndReason(
+            "SearchResponse",
+            searchResponseValidator.errors
+        );
+    }
+}
+
+
+
+/***
+ * English word-related
+ */
+
+
+export function validateEnglishWordResponse(content: unknown): asserts content is EnglishWordResponse {
+    if (!englishWordResponseValidator(content)) {
+        throw ApiSchemaValidationError.fromTypeNameAndReason(
+            "EnglishWordResponse",
+            englishWordResponseValidator.errors
+        );
     }
 }

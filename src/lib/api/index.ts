@@ -1,7 +1,7 @@
 import { PUBLIC_BASE_API_URL } from "$env/static/public";
 import { MissingAuthenticationError, StatusCodeError } from "$lib/errors";
-import type { SearchRequest, SearchResponse, UserInformationResponse, UserLoginRequest, UserLoginResponse } from "./schemaTypes";
-import { validateSearchResponse, validateUserInformationResponse, validateUserLoginResponse } from "./schemaValidators";
+import type { EnglishWordResponse, SearchRequest, SearchResponse, UserInformationResponse, UserLoginRequest, UserLoginResponse } from "./schemaTypes";
+import { validateEnglishWordResponse, validateSearchResponse, validateUserInformationResponse, validateUserLoginResponse } from "./schemaValidators";
 
 export class AmbientApiParameters {
     public readonly fetcher: typeof fetch;
@@ -21,7 +21,10 @@ export class AmbientApiParameters {
     }
 }
 
-export class UserLoginState {
+/**
+ * A user authentication state; contains solely the access token (if any).
+ */
+export class UserAuthentication {
     private accessToken: string | null;
 
     constructor(
@@ -31,12 +34,12 @@ export class UserLoginState {
     }
 
 
-    public static withAccessToken(accessToken: string): UserLoginState {        
-        return new UserLoginState(accessToken);
+    public static newWithAuthentication(accessToken: string): UserAuthentication {        
+        return new UserAuthentication(accessToken);
     }
 
-    public static withoutAuthentication(): UserLoginState {
-        return new UserLoginState(null);
+    public static newWithoutAuthentication(): UserAuthentication {
+        return new UserAuthentication(null);
     }
 
 
@@ -48,12 +51,15 @@ export class UserLoginState {
         this.accessToken = accessToken;
     }
 
-    public withUpdatedAccessToken(accessToken: string | null): UserLoginState {
+    public usingUpdatedAccessToken(accessToken: string | null): UserAuthentication {
         this.setAccessToken(accessToken);
         return this;
     }
-}
 
+    public hasToken(): boolean {
+        return this.accessToken !== null;
+    }
+}
 
 
 
@@ -75,7 +81,7 @@ const FETCH_WITH_CONTEXT_DEFAULT_OPTIONS: Partial<FetchWithContextOptions> = {
 
 async function fetchWithContext(
     ambientApiParameters: AmbientApiParameters,
-    loginState: UserLoginState,
+    loginState: UserAuthentication,
     options: FetchWithContextOptions,
 ): Promise<Response> {
     options = {
@@ -123,39 +129,52 @@ async function fetchWithContext(
 
 export class Api {
     private ambientApiParameters: AmbientApiParameters;
-    private userLoginState: UserLoginState;
+    private userAuthentication: UserAuthentication;
 
     constructor(
         ambientApiParameters: AmbientApiParameters,
-        userLoginState: UserLoginState
+        userAuthentication: UserAuthentication
     ) {
         this.ambientApiParameters = ambientApiParameters;
-        this.userLoginState = userLoginState;
+        this.userAuthentication = userAuthentication;
     }
 
 
-    static withoutAuthentication(ambientApiParameters: AmbientApiParameters): Api {
-        return new Api(ambientApiParameters, UserLoginState.withoutAuthentication());
+    public static newWithoutAuthentication(ambientApiParameters: AmbientApiParameters): Api {
+        return new Api(ambientApiParameters, UserAuthentication.newWithoutAuthentication());
     }
 
-    static withAccessToken(
+    public static newWithAccessToken(
         ambientApiParameters: AmbientApiParameters,
         accessToken: string,
     ): Api {
-        return new Api(ambientApiParameters, UserLoginState.withAccessToken(accessToken))
+        return new Api(ambientApiParameters, UserAuthentication.newWithAuthentication(accessToken))
     }
 
-    static nativeFetchWithLoginState(
-        userLoginState: UserLoginState
+    public static newUsingNativeFetch(
+        userAuthentication: UserAuthentication
     ): Api {
-        return new Api(AmbientApiParameters.native(), userLoginState)
+        return new Api(AmbientApiParameters.native(), userAuthentication)
     }
 
-    static withLoginState(
+    public static newUsingSvelteFetch(
+        svelteFetch: typeof fetch,
+        userAuthentication: UserAuthentication
+    ): Api {
+        return new Api(AmbientApiParameters.svelte(svelteFetch), userAuthentication)
+    }
+
+    public static newUsingSvelteFetchWithoutAuthentication(
+        svelteFetch: typeof fetch,
+    ): Api {
+        return new Api(AmbientApiParameters.svelte(svelteFetch), UserAuthentication.newWithoutAuthentication())
+    }
+
+    public static newFull(
         ambientApiParameters: AmbientApiParameters,
-        userLoginState: UserLoginState
+        userAuthentication: UserAuthentication
     ): Api {
-        return new Api(ambientApiParameters, userLoginState)
+        return new Api(ambientApiParameters, userAuthentication)
     }
 
 
@@ -170,7 +189,7 @@ export class Api {
 
         const response = await fetchWithContext(
             this.ambientApiParameters,
-            this.userLoginState,
+            this.userAuthentication,
             {
                 endpoint: "/login",
                 method: "POST",
@@ -187,7 +206,7 @@ export class Api {
     public async getCurrentUserInformation(): Promise<UserInformationResponse> {
         const response = await fetchWithContext(
             this.ambientApiParameters,
-            this.userLoginState,
+            this.userAuthentication,
             {
                 endpoint: "/users/me",
                 method: "GET",
@@ -208,7 +227,7 @@ export class Api {
 
         const response = await fetchWithContext(
             this.ambientApiParameters,
-            this.userLoginState,
+            this.userAuthentication,
             {
                 endpoint: "/dictionary/search",
                 method: "POST",
@@ -222,4 +241,24 @@ export class Api {
 
         return responseJson;
     }
+
+    public async getEnglishWordByLemma(lemma: string): Promise<EnglishWordResponse> {
+        const response = await fetchWithContext(
+            this.ambientApiParameters,
+            this.userAuthentication,
+            {
+                endpoint: "/dictionary/english/by-lemma/" + lemma,
+                method: "GET",
+                includeAccessToken: false,
+            }
+        );
+
+        const responseJson = await response.json();
+        validateEnglishWordResponse(responseJson);
+
+        return responseJson;
+    }
+
+    // TODO
+    // public async getEnglishWordByLemma(lemma: string): Promise<
 }
