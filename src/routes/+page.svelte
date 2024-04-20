@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Api } from "$lib/api";
-    import TextInput from "$lib/components/atoms/TextInput/TextInput.svelte";
+    import TextInput from "$lib/components/atoms/input/input.svelte";
     import { userAuthenticationContext } from "$lib/contexts";
     import Logger, { CommonColors } from "$lib/logger";
     import { curryAsyncCallbackWithThrottling } from "$lib/utilities";

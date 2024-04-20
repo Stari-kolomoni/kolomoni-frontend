@@ -1,4 +1,8 @@
 @use "colors";
 
+@use "vendor";
+
+@use "design-system";
+
 @use "$lib/components/components";
 @use "../../routes/routes";

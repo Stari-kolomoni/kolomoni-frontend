@@ -2,6 +2,7 @@
 	"name": "kolomoni-frontend",
 	"version": "0.0.1",
 	"private": true,
+	"license": "GPL-3.0-only",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -41,5 +42,8 @@
 		"vite": "^5.0.3"
 	},
 	"type": "module",
-	"packageManager": "yarn@4.1.0"
+	"packageManager": "yarn@4.1.0",
+	"dependencies": {
+		"bits-ui": "^0.21.4"
+	}
 }

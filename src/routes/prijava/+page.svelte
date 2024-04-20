@@ -2,6 +2,9 @@
     import { goto } from "$app/navigation";
     import { Api, UserAuthentication } from "$lib/api";
     import { UserInfo } from "$lib/api/userInfo";
+    import { Button } from "$lib/components/atoms/button";
+    import { Input } from "$lib/components/atoms/input";
+    import { Label } from "$lib/components/atoms/label";
     import { userAuthenticationContext, userInfoContext } from "$lib/contexts";
     import Logger, { CommonColors } from "$lib/logger";
     import { get } from "svelte/store";
@@ -49,25 +52,27 @@
 
 
 <form on:submit|preventDefault={onLoginFormSubmit}>
-    <label>
+    <Label for="km-signup-username-input">
         Uporabniško ime
-        <input
-            type="text"
-            name="username"
-            id="username"
-            bind:value={username}
-        >
-    </label>
-    <label>
+    </Label>
+    <Input 
+        id="km-signup-username-input"
+        type="text"
+        name="username"
+        bind:value={username}
+    />
+
+    <Label for="km-signup-password-input">
         Geslo
-        <input
-            type="text"
-            name="password"
-            id="password"
-            bind:value={password}
-        >
-    </label>
-    <button>Prijava</button>
+    </Label>
+    <Input
+        id="km-signup-password-input"
+        type="password"
+        name="password"
+        bind:value={password}
+    />
+
+    <Button>Prijava</Button>
 </form>
 
 <a href="/uporabniski-racun">Pojdi na uporabniški račun</a>

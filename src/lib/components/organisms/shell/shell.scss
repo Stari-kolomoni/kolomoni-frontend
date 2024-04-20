@@ -1,0 +1,39 @@
+.km_shell {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+
+.km_shell_header {
+    flex: none;
+    width: 100%;
+}
+
+
+.km_shell_primary-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+
+.km_shell_sidebar {
+    flex: none;
+    overflow: hidden auto;
+}
+
+
+.km_shell_main {
+    flex: auto;
+}
+
+
+.km_shell_footer {
+    flex: none;
+    width: 100%;
+}

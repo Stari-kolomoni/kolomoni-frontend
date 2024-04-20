@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { writable } from "svelte/store";
     import type { LayoutData } from "./$types";
     import { UserAuthentication } from "$lib/api";
     import { userAuthenticationContext, userInfoContext } from "$lib/contexts";
-    import Sidebar from "$lib/components/organisms/Sidebar/Sidebar.svelte";
     import { UserInfo } from "$lib/api/userInfo";
     import { createUserAuthenticationStore, createUserInfoStore } from "$lib/stores";
+    import { Sidebar } from "$lib/components/organisms/sidebar";
+    import { Shell } from "$lib/components/organisms/shell";
 
     export let data: LayoutData;
 
@@ -30,6 +30,11 @@
     import "$lib/style/global-styles.scss";
 </script>
 
-<Sidebar></Sidebar>
-
-<slot></slot>
+<Shell>
+    <svelte:fragment slot="sidebar">
+        <Sidebar></Sidebar>
+    </svelte:fragment>
+    <svelte:fragment slot="default">
+        <slot></slot>
+    </svelte:fragment>
+</Shell>

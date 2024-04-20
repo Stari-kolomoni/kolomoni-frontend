@@ -1,0 +1,13 @@
+@use "sass:color";
+@use "$lib/style/_colors.scss" as colors;
+
+$input-border-color: color.adjust(colors.$white, $lightness: -25%);
+
+.km_input {
+    padding: 0.5em 0.6em;
+    display: inline-block;
+    border: 1px solid $input-border-color;
+    box-shadow: inset 0 1px 1px $input-border-color;
+    border-radius: 4px;
+    vertical-align: middle;
+}
