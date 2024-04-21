@@ -159,9 +159,17 @@ export class Api {
 
     public static newUsingSvelteFetch(
         svelteFetch: typeof fetch,
-        userAuthentication: UserAuthentication
+        userAuthentication: UserAuthentication | string | null,
     ): Api {
-        return new Api(AmbientApiParameters.svelte(svelteFetch), userAuthentication)
+        if (userAuthentication instanceof UserAuthentication) {
+            return new Api(AmbientApiParameters.svelte(svelteFetch), userAuthentication)
+        }
+
+        if (userAuthentication === null) {
+            return new Api(AmbientApiParameters.svelte(svelteFetch), UserAuthentication.newWithoutAuthentication());
+        } else {
+            return new Api(AmbientApiParameters.svelte(svelteFetch), UserAuthentication.newWithAuthentication(userAuthentication));
+        }
     }
 
     public static newUsingSvelteFetchWithoutAuthentication(

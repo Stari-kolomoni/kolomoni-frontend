@@ -1,48 +1,12 @@
 <script lang="ts">
-    import { Api } from "$lib/api";
-    import TextInput from "$lib/components/atoms/input/input.svelte";
-    import { userAuthenticationContext } from "$lib/contexts";
-    import Logger, { CommonColors } from "$lib/logger";
-    import { curryAsyncCallbackWithThrottling } from "$lib/utilities";
-    import { get } from "svelte/store";
-
-    const log = new Logger("login", CommonColors.CAMEL);
-    const loginStateStore = userAuthenticationContext.get();
-
-
-    let searchBarText: string = "";
-
-
-    async function performUnthrottledSearch(
-        event: { currentTarget: EventTarget & HTMLInputElement }
-    ) {
-        log.info(`User is searching for: ${searchBarText}`);
-
-        const loginState = get(loginStateStore);
-        const api = Api.newUsingNativeFetch(loginState);
-        
-        const searchResults = await api.search(searchBarText);
-
-        log.info("Got search results:");
-        for (const englishResult of searchResults.search_results.english_results) {
-            log.info(` - ${englishResult.lemma}`)
-        }
-        for (const sloveneResult of searchResults.search_results.slovene_results) {
-            log.info(` - ${sloveneResult.lemma}`)
-        }
-    }
-
-    let performThrottledSearch = curryAsyncCallbackWithThrottling(performUnthrottledSearch, 50);
+    import { Search } from "$lib/components/organisms/search";
 </script>
 
+<div class="km_homepage">
+    <h1 class="km_homepage_heading">Stari Kolomoni</h1>
+    <h5 class="km_homepage_subheading">slovenski odprti fantazijski slovar</h5>
 
-<h1>Stari Kolomoni</h1>
-<p>odprti slovenski fantazijski slovar</p>
-
-<div>
-    <TextInput
-        bind:value={searchBarText}
-        on:input={performThrottledSearch}
-        inputId="search-input"
-    ></TextInput>
+    <Search
+        class="km_homepage_search"
+    />
 </div>

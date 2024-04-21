@@ -1,0 +1,46 @@
+@use "../fonts" as fonts;
+
+
+// Headings 1 to 6
+h1 {
+    font-family: fonts.$font-family-primary;
+    font-size: fonts.$font-size-h1;
+    color: fonts.$font-color-primary;
+}
+
+h2 {
+    font-family: fonts.$font-family-primary;
+    font-size: fonts.$font-size-h2;
+    color: fonts.$font-color-primary;
+}
+
+h3 {
+    font-family: fonts.$font-family-primary;
+    font-size: fonts.$font-size-h3;
+    color: fonts.$font-color-primary;
+}
+
+h4 {
+    font-family: fonts.$font-family-primary;
+    font-size: fonts.$font-size-h4;
+    color: fonts.$font-color-primary;
+}
+
+h5 {
+    font-family: fonts.$font-family-secondary;
+    font-size: fonts.$font-size-h5;
+    color: fonts.$font-color-primary;
+}
+
+h6 {
+    font-family: fonts.$font-family-secondary;
+    font-size: fonts.$font-size-h6;
+    color: fonts.$font-color-primary;
+}
+
+// Body text
+p, span, div, input, label {
+    font-family: fonts.$font-family-secondary;
+    font-size: fonts.$font-size-body-text;
+    color: fonts.$font-color-primary;
+}

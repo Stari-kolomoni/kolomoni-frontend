@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
+    import { goto, invalidate, invalidateAll } from "$app/navigation";
     import { Api, UserAuthentication } from "$lib/api";
     import { UserInfo } from "$lib/api/userInfo";
     import { Button } from "$lib/components/atoms/button";
@@ -46,6 +46,7 @@
 
         log.info(`User ${userInfo.user.username} is logged in!`);
 
+        await invalidate("/prijava");
         await goto("/");
     }
 </script>
@@ -72,7 +73,7 @@
         bind:value={password}
     />
 
-    <Button>Prijava</Button>
+    <Button type="submit">Prijava</Button>
 </form>
 
 <a href="/uporabniski-racun">Pojdi na uporabniški račun</a>

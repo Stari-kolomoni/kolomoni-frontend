@@ -117,6 +117,22 @@ export function stripStringPrefixAndSuffix(value: string, prefix: string, suffix
 }
 
 
+export function mergeBaseWithOptionalCssClasses(
+    base: string,
+    ...optionalClasses: (string | null)[]
+): string {
+    let finalClasses = base;
+
+    optionalClasses.forEach((classes) => {
+        if (classes !== null) {
+            finalClasses += " " + classes;
+        }
+    });
+
+    return finalClasses;
+}
+
+
 
 export function curryAsyncCallbackWithThrottling<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

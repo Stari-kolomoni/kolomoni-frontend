@@ -13,3 +13,5 @@ export type SearchResponse = paths["/dictionary/search"]["get"]["responses"]["20
 
 export type EnglishWordResponse = paths["/dictionary/english/{word_uuid}"]["get"]["responses"]["200"]["content"]["application/json"];
 export type EnglishWord = components["schemas"]["EnglishWord"];
+
+export type SloveneWord = components["schemas"]["SloveneWord"];

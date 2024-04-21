@@ -14,6 +14,32 @@ $white: #fff;
 
 
 
+// Primary body text color, very dark but not completely black.
+$body-text: #282517;
+
+// Secondary body text color that is slightly lighter than $body-text.
+$body-text-lighter: #555242;
+
+// Tertiary body text color that is even lighter than $body-text-lighter.
+$body-text-even-lighter: #777463;
+
+
+
+// Primary color in three shades, mostly representing slovene words.
+$primary: #E39148;
+$primary-dark: #C96E1D;
+$primary-darker: #B3641E;
+
+
+// Secondary color in three shades, mostly representing english words.
+$secondary: #CCB43B;
+$secondary-dark: #907E23;
+$secondary-darker: #756515;
+
+
+
+
+
 ///
 // Background colors.
 ///
@@ -25,4 +51,7 @@ $background-primary: #F8F6F2;
 $background-elevated: #FDFDFC;
 
 
-
+$sidebar-background: #ECE7DF;
+$sidebar-background-hovered: #cfccc7;
+$sidebar-border: #cac5bc;
+$sidebar-box-shadow: #0000001c;

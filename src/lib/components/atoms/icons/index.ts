@@ -1,0 +1,1 @@
+export { KolomonIcon } from "./kolomon";

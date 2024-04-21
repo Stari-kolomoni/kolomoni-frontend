@@ -30,7 +30,7 @@
     import "$lib/style/global-styles.scss";
 </script>
 
-<Shell>
+<Shell sidebarClasses="km_sidebar">
     <svelte:fragment slot="sidebar">
         <Sidebar></Sidebar>
     </svelte:fragment>

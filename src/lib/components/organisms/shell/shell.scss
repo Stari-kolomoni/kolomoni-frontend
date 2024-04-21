@@ -8,7 +8,6 @@
 
 
 .km_shell_header {
-    flex: none;
     width: 100%;
 }
 
@@ -23,17 +22,14 @@
 
 
 .km_shell_sidebar {
-    flex: none;
-    overflow: hidden auto;
+    overflow: visible auto;
 }
 
 
 .km_shell_main {
-    flex: auto;
 }
 
 
 .km_shell_footer {
-    flex: none;
     width: 100%;
 }

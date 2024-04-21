@@ -6,8 +6,17 @@ import { ErrorWithReasonResponse as errorWithReasonResponseValidator } from "./a
 import { UserLoginResponse as userLoginResponseValidator } from "./auto-generated/validation/UserLoginResponse";
 import { SearchResponse as searchResponseValidator } from "./auto-generated/validation/SearchResponse";
 import { EnglishWordResponse as englishWordResponseValidator } from "./auto-generated/validation/EnglishWordResponse";
+import { SloveneWord as sloveneWordValidator } from "./auto-generated/validation/SloveneWord";
 
-import type { EnglishWordResponse, ErrorWithReasonResponse, SearchResponse, UserInformationResponse, UserLoginResponse, UserPermissionListResponse } from "./schemaTypes";
+import type {
+    EnglishWordResponse,
+    ErrorWithReasonResponse,
+    SearchResponse,
+    UserInformationResponse,
+    UserLoginResponse,
+    UserPermissionListResponse,
+    SloveneWord
+} from "./schemaTypes";
 
 
 /***
@@ -85,6 +94,22 @@ export function validateEnglishWordResponse(content: unknown): asserts content i
         throw ApiSchemaValidationError.fromTypeNameAndReason(
             "EnglishWordResponse",
             englishWordResponseValidator.errors
+        );
+    }
+}
+
+
+
+/***
+ * Slovene word-related
+ */
+
+
+export function validateSloveneWord(content: unknown): asserts content is SloveneWord {
+    if (!sloveneWordValidator(content)) {
+        throw ApiSchemaValidationError.fromTypeNameAndReason(
+            "SloveneWord",
+            sloveneWordValidator.errors
         );
     }
 }

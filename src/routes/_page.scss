@@ -1,0 +1,26 @@
+.km_homepage {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.km_homepage_heading {
+    margin-bottom: 0;
+}
+
+.km_homepage_subheading {
+    margin-top: 0;
+}
+
+.km_homepage_search {
+    margin-top: 40px;
+    width: 380px;
+    height: 60px;
+    
+    .km_input {
+        border-radius: 4px;
+    }
+}

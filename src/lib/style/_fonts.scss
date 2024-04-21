@@ -1,0 +1,22 @@
+@use "./colors" as colors;
+
+// The font stack is Libre Baskerville and Open Sans, see index.html.
+
+$font-family-primary: "Libre Baskerville", serif;
+
+// Based on GitHub's font stack, more information: https://css-tricks.com/snippets/css/system-font-stack/
+$font-family-secondary: "Open Sans", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+
+$font-color-primary: colors.$body-text;
+
+
+$font-size-h1: 61.04px;
+$font-size-h2: 48.83px;
+$font-size-h3: 39.06px;
+$font-size-h4: 31.25px;
+$font-size-h5: 25px;
+$font-size-h6: 20px;
+$font-size-body-text: 16px;
+$font-size-alt-text: 14px;
+$font-size-overline: 12px;

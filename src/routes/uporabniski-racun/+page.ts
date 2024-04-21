@@ -1,4 +1,4 @@
-import { Api, UserAuthentication } from "$lib/api";
+import { Api } from "$lib/api";
 import { UserInfo } from "$lib/api/userInfo";
 import { redirect } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
@@ -6,10 +6,8 @@ import type { PageLoad } from "./$types";
 export const load = (async ({ fetch, parent }) => {
     const parentData = await parent();
 
-    const userAuthentication = new UserAuthentication(parentData.accessToken);
-
-    if (userAuthentication.hasToken()) {
-        const api = Api.newUsingSvelteFetch(fetch, userAuthentication);
+    if (parentData.accessToken !== null) {
+        const api = Api.newUsingSvelteFetch(fetch, parentData.accessToken);
         const userInfoLoadPromise = api.getCurrentUserInformation()
             .then((rawUserData) => {
                 return UserInfo.fromApiResponse(rawUserData).serialize();
