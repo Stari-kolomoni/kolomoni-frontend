@@ -1,29 +1,78 @@
+@use "$lib/style/colors" as colors;
+@use "$lib/style/fonts" as fonts;
+
+.km_dictionary-en {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.km_dictionary-en_container {
+    min-width: 600px;
+    background-color: colors.$background-elevated;
+    border-left: 1px solid colors.$background-elevated-border;
+    border-right: 1px solid colors.$background-elevated-border;
+    height: 100%;
+}
+
+
+
+.km_word-en {
+    display: grid;
+    grid-template-rows:
+        [lemma] 1fr
+        [description] 3fr;
+    grid-template-columns:
+        [full] 1fr;
+    margin: 4px;
+    padding: 8px 6px;
+}
+
+.km_word-en_lemma {
+    grid-row: lemma / span 1;
+    grid-column: full / span 1;
+    align-self: flex-start;
+    font-family: fonts.$font-family-primary;
+    font-size: fonts.$font-size-h3;
+}
+
+.km_word-en_description {
+    grid-row: description / span 1;
+    grid-column: full / span 1;
+    align-self: flex-start;
+}
+
+
+
 // @use "$lib/style/_variables.scss" as vars;
 // @use "$lib/style/design-system/_typography.scss" as typography;
 
-.o-centered-canvas {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+// .o-centered-canvas {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+// }
 
-.o-central-column {
-    width: 750px;
-}
+// .o-central-column {
+//     width: 750px;
+// }
 
-.c-heading {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
+// .c-heading {
+//     display: flex;
+//     flex-direction: row;
+//     align-items: baseline;
 
-    &__lemma {
-        margin: 0;
-    }
+//     &__lemma {
+//         margin: 0;
+//     }
 
-    &__disambiguation {
-        // color: vars.$body-text-lighter;
-        margin-left: 6px;
+//     &__disambiguation {
+//         // color: vars.$body-text-lighter;
+//         margin-left: 6px;
 
-        // font-size: typography.$font-size-larger-body-text;
-    }
-}
+//         // font-size: typography.$font-size-larger-body-text;
+//     }
+// }

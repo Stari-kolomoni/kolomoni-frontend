@@ -1,3 +1,4 @@
 // @use "slovar/en/[lemma]/page.scss";
 
-@use "page";
+@use "page" as index-page;
+@use "slovar/en/[lemma]/page" as slovar-en-lemma-page;
