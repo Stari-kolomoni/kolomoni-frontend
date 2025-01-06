@@ -8,10 +8,14 @@
     import { curryAsyncCallbackWithThrottling, mergeBaseWithOptionalCssClasses } from "$lib/utilities";
     import { get, writable, type Writable } from "svelte/store";
 
-    let className: string | null = null;
-    export { className as class };
+    
 
-    export let inputClassName: string | null = null;
+    interface Props {
+        class?: string | null;
+        inputClassName?: string | null;
+    }
+
+    let { class: className = null, inputClassName = null }: Props = $props();
 
 
     const baseSearchClassName = "km_search";
@@ -30,7 +34,7 @@
     const loginStateStore = userAuthenticationContext.get();
 
 
-    let searchText: string = "";
+    let searchText: string = $state("");
     let searchResultsStore: Writable<null | {
         english: EnglishWord[],
         slovene: SloveneWord[],
@@ -91,7 +95,7 @@
             {#each $searchResultsStore.english as englishWord}
                 <button 
                     class="km_search-result km_search_english-result"
-                    on:click={() => goToEnglishWord(englishWord.lemma)}
+                    onclick={() => goToEnglishWord(englishWord.lemma)}
                     tabindex="0"
                 >
                     <span class="km_search-result_lemma">
@@ -103,7 +107,7 @@
             {#each $searchResultsStore.slovene as sloveneWord}
                 <button
                     class="km_search-result km_search_slovene-result"
-                    on:click={() => goToSloveneWord(sloveneWord.lemma)}
+                    onclick={() => goToSloveneWord(sloveneWord.lemma)}
                     tabindex="0"
                 >
                     <span class="km_search-result_lemma">

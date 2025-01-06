@@ -6,7 +6,11 @@
     import { onMount } from "svelte";
     import { UserInfo } from "$lib/api/userInfo";
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
 
     const loginState = userAuthenticationContext.get();
     const userInfo = userInfoContext.get();
@@ -32,4 +36,4 @@
 <div>Prikazano ime: {$userInfo?.displayName}</div>
 <div>Datum in čas registracije: {$userInfo?.joinedAt}</div>
 
-<button on:click={signOutUser}>Odjava</button>
+<button onclick={signOutUser}>Odjava</button>

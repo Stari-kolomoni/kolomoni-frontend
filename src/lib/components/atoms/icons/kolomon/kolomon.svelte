@@ -1,6 +1,11 @@
 <script lang="ts">
-    let className: string | null = null;
-    export { className as class };
+    interface Props {
+        class?: string | null;
+        [key: string]: any
+    }
+
+    let { class: className = null, ...rest }: Props = $props();
+    
 
     const baseClassName: string = "km_icon km_icon_kolomon";
     let fullClassName = className !== null ? baseClassName + " " + className : baseClassName;
@@ -16,7 +21,7 @@
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xml:space="preserve"
     style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"
-	{...$$restProps}
+	{...rest}
 >
     <g id="Kolomon-Icon">
        <path id="Left-Page" d="M26.785,38.413l320.175,213.515l0,430.459l-320.175,-213.514l-0,-430.46Z" style="fill:#ecb07c;"/>

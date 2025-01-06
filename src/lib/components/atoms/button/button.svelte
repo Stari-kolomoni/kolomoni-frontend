@@ -1,15 +1,21 @@
 <script lang="ts">
     import { Button as ButtonPrimitive } from "bits-ui";
 
-    export let type: "submit" | "reset" | "button" = "button";
+	interface Props {
+		type?: "submit" | "reset" | "button";
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let { type = "button", children, ...rest }: Props = $props();
 </script>
 
 <ButtonPrimitive.Root
     class="km_button"
 	type={type}
-	{...$$restProps}
+	{...rest}
 	on:click
 	on:keydown
 >
-    <slot></slot>
+    {@render children?.()}
 </ButtonPrimitive.Root>

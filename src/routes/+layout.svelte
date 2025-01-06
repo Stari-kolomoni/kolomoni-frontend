@@ -7,7 +7,12 @@
     import { Sidebar } from "$lib/components/organisms/sidebar";
     import { Shell } from "$lib/components/organisms/shell";
 
-    export let data: LayoutData;
+    interface Props {
+        data: LayoutData;
+        children?: import('svelte').Snippet;
+    }
+
+    let { data, children }: Props = $props();
 
 
     // Initialize user authentication store and context.
@@ -26,15 +31,19 @@
 
 </script>
 
-<script lang="ts" context="module">
+<script lang="ts" module>
     import "$lib/style/global-styles.scss";
 </script>
 
 <Shell sidebarClasses="km_sidebar">
-    <svelte:fragment slot="sidebar">
-        <Sidebar></Sidebar>
-    </svelte:fragment>
-    <svelte:fragment slot="default">
-        <slot></slot>
-    </svelte:fragment>
+    {#snippet sidebar()}
+    
+            <Sidebar></Sidebar>
+        
+    {/snippet}
+    {#snippet default()}
+    
+            {@render children?.()}
+        
+    {/snippet}
 </Shell>

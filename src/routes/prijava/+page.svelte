@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { preventDefault } from 'svelte/legacy';
+
     import { goto, invalidate, invalidateAll } from "$app/navigation";
     import { Api, UserAuthentication } from "$lib/api";
     import { UserInfo } from "$lib/api/userInfo";
@@ -16,8 +18,8 @@
 
 
 
-    let username: string;
-    let password: string;
+    let username: string = $state();
+    let password: string = $state();
 
 
     async function onLoginFormSubmit(
@@ -52,7 +54,7 @@
 </script>
 
 
-<form on:submit|preventDefault={onLoginFormSubmit}>
+<form onsubmit={preventDefault(onLoginFormSubmit)}>
     <Label for="km-signup-username-input">
         Uporabniško ime
     </Label>
