@@ -1,4 +1,4 @@
-import type { UserInformationResponse } from "./schemaTypes";
+import type { UserInfoResponse } from "./schemaTypes";
 
 export class UserInfo {
     public id: number;
@@ -30,7 +30,7 @@ export class UserInfo {
     }
 
     public static fromApiResponse(
-        userInfo: UserInformationResponse
+        userInfo: UserInfoResponse
     ): UserInfo {
         const joinedAt = new Date(userInfo.user.joined_at);
         const lastActiveAt = new Date(userInfo.user.last_active_at);

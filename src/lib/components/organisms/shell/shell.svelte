@@ -1,13 +1,14 @@
 <script lang="ts">
+    import type { Snippet } from "svelte";
     import { mergeBaseWithOptionalCssClasses } from "$lib/utilities";
 
     interface Props {
         headerClasses?: string | null;
         sidebarClasses?: string | null;
-        header?: import('svelte').Snippet;
-        sidebar?: import('svelte').Snippet;
-        children?: import('svelte').Snippet;
-        footer?: import('svelte').Snippet;
+        header?: Snippet;
+        sidebar?: Snippet;
+        children?: Snippet;
+        footer?: Snippet;
     }
 
     let {

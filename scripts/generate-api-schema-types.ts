@@ -2,6 +2,11 @@ import * as readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import * as path from "node:path";
 import * as fs from "node:fs";
+import * as fsPromises from "node:fs/promises";
+
+import OpenApiTypeScript, { astToString } from "openapi-typescript";
+import { ESLint } from "eslint";
+
 import { executeWithStdoutCapture, pathExists } from "./shared/utilities";
 import { OPENAPI_SCHEMA_OUTPUT_FILE_PATH, REPOSITORY_ROOT_DIRECTORY_PATH } from "./shared/paths";
 
@@ -42,32 +47,36 @@ async function generateTypesFromOpenApiSchema(
     console.log("Generating types.");
 
 
-    await executeWithStdoutCapture(
-        "yarn",
-        [
-            "openapi-typescript",
-            inputPathRelativeToRoot,
-            "--default-non-nullable",
-            "--alphabetize",
-            "--output",
-            outputPathRelativeToRoot,
-        ],
-        REPOSITORY_ROOT_DIRECTORY_PATH,
-        "openapi-typscript"
+    const openApiJsonString = await fsPromises.readFile(openApiSchemaFilePath, { encoding: "utf-8" });
+
+    const generatedSchemaAst = await OpenApiTypeScript(
+        openApiJsonString,
+        {
+            defaultNonNullable: true,
+            alphabetize: true,
+        }
     );
 
+    await fsPromises.writeFile(
+        typeScriptDeclarationOutputFilePath,
+        astToString(generatedSchemaAst),
+        { encoding: "utf-8" }
+    );
+
+    
     console.log("Types generated, reformatting file with ESLint.");
 
-    await executeWithStdoutCapture(
-        "yarn",
-        [
-            "eslint",
-            typeScriptDeclarationOutputFilePath,
-            "--fix"
-        ],
-        REPOSITORY_ROOT_DIRECTORY_PATH,
-        "ESLint"
-    );
+
+    const eslint = new ESLint();
+
+    const lintResults = await eslint.lintFiles(typeScriptDeclarationOutputFilePath);
+    await ESLint.outputFixes(lintResults);
+
+    const formatter = await eslint.loadFormatter("stylish");
+	const resultText = formatter.format(lintResults);
+
+    console.log("ESLint formatting output:");
+    console.log(resultText);
 }
 
 

@@ -1,7 +1,6 @@
 import { PUBLIC_BASE_API_URL } from "$env/static/public";
 import { MissingAuthenticationError, StatusCodeError } from "$lib/errors";
-import type { EnglishWordResponse, SearchRequest, SearchResponse, UserInformationResponse, UserLoginRequest, UserLoginResponse } from "./schemaTypes";
-import { validateEnglishWordResponse, validateSearchResponse, validateUserInformationResponse, validateUserLoginResponse } from "./schemaValidators";
+import type { EnglishWordInfoResponse, SearchRequest, SearchResponse, UserInfoResponse, UserLoginRequest, UserLoginResponse } from "./schemaTypes";
 
 export class AmbientApiParameters {
     public readonly fetcher: typeof fetch;
@@ -205,13 +204,13 @@ export class Api {
             }
         );
 
-        const responseJson = await response.json();
-        validateUserLoginResponse(responseJson);
+        const responseJson = await response.json() as UserLoginResponse;
+        // validateUserLoginResponse(responseJson);
 
         return responseJson;
     }
 
-    public async getCurrentUserInformation(): Promise<UserInformationResponse> {
+    public async getCurrentUserInformation(): Promise<UserInfoResponse> {
         const response = await fetchWithContext(
             this.ambientApiParameters,
             this.userAuthentication,
@@ -222,8 +221,8 @@ export class Api {
             }
         );
 
-        const responseJson = await response.json();
-        validateUserInformationResponse(responseJson);
+        const responseJson = await response.json() as UserInfoResponse;
+        // validateUserInformationResponse(responseJson);
 
         return responseJson;
     }
@@ -244,29 +243,42 @@ export class Api {
             }
         );
 
-        const responseJson = await response.json();
-        validateSearchResponse(responseJson);
+        const responseJson = await response.json() as SearchResponse;
+        // validateSearchResponse(responseJson);
 
         return responseJson;
     }
 
-    public async getEnglishWordByLemma(lemma: string): Promise<EnglishWordResponse> {
+    public async getEnglishWordByLemma(lemma: string): Promise<EnglishWordInfoResponse> {
         const response = await fetchWithContext(
             this.ambientApiParameters,
             this.userAuthentication,
             {
-                endpoint: "/dictionary/english/by-lemma/" + lemma,
+                endpoint: "/dictionary/english/words/by-lemma/" + lemma,
                 method: "GET",
                 includeAccessToken: false,
             }
         );
 
-        const responseJson = await response.json();
-        validateEnglishWordResponse(responseJson);
+        const responseJson = await response.json() as EnglishWordInfoResponse;
+        // validateEnglishWordResponse(responseJson);
 
         return responseJson;
     }
 
-    // TODO
-    // public async getEnglishWordByLemma(lemma: string): Promise<
+    public async getEnglishWordById(wordId: string): Promise<EnglishWordInfoResponse> {
+        const response = await fetchWithContext(
+            this.ambientApiParameters,
+            this.userAuthentication,
+            {
+                endpoint: "/dictionary/english/words/" + wordId,
+                method: "GET",
+                includeAccessToken: false,
+            }
+        );
+
+        const responseJson = await response.json() as EnglishWordInfoResponse;
+
+        return responseJson;
+    }
 }

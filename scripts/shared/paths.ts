@@ -20,9 +20,9 @@ export const AUTO_GENERATED_DIRECTORY_PATH = path.join(
     "auto-generated"
 );
 
-export const VALIDATION_DIRECTORY_PATH = path.join(
+export const VALIDATORS_DIRECTORY_PATH = path.join(
     AUTO_GENERATED_DIRECTORY_PATH,
-    "validation"
+    "validators"
 );
 
 export const OPENAPI_SCHEMA_OUTPUT_FILE_PATH = path.join(

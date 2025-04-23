@@ -4,7 +4,6 @@
     import { userAuthenticationContext, userInfoContext } from "$lib/contexts";
     import { UserInfo } from "$lib/api/userInfo";
     import { createUserAuthenticationStore, createUserInfoStore } from "$lib/stores";
-    import { Sidebar } from "$lib/components/organisms/sidebar";
     import { Shell } from "$lib/components/organisms/shell";
 
     interface Props {
@@ -35,15 +34,6 @@
     import "$lib/style/global-styles.scss";
 </script>
 
-<Shell sidebarClasses="km_sidebar">
-    {#snippet sidebar()}
-    
-            <Sidebar></Sidebar>
-        
-    {/snippet}
-    {#snippet default()}
-    
-            {@render children?.()}
-        
-    {/snippet}
+<Shell>
+    {@render children?.()}
 </Shell>

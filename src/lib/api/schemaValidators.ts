@@ -9,12 +9,12 @@ import { EnglishWordResponse as englishWordResponseValidator } from "./auto-gene
 import { SloveneWord as sloveneWordValidator } from "./auto-generated/validation/SloveneWord";
 
 import type {
-    EnglishWordResponse,
-    ErrorWithReasonResponse,
+    EnglishWordInfoResponse,
+    ResponseWithErrorReason,
     SearchResponse,
-    UserInformationResponse,
+    UserInfoResponse,
     UserLoginResponse,
-    UserPermissionListResponse,
+    UserPermissionsResponse,
     SloveneWord
 } from "./schemaTypes";
 
@@ -24,7 +24,7 @@ import type {
  */
 
 
-export function validateUserInformationResponse(content: unknown): asserts content is UserInformationResponse {
+export function validateUserInformationResponse(content: unknown): asserts content is UserInfoResponse {
     if (!userInformationResponseValidator(content)) {
         throw ApiSchemaValidationError.fromTypeNameAndReason(
             "UserInformationResponse",
@@ -33,7 +33,7 @@ export function validateUserInformationResponse(content: unknown): asserts conte
     }
 }
 
-export function validateUserPermissionListResponse(content: unknown): asserts content is UserPermissionListResponse {
+export function validateUserPermissionListResponse(content: unknown): asserts content is UserPermissionsResponse {
     if (!userPermissionListResponseValidator(content)) {
         throw ApiSchemaValidationError.fromTypeNameAndReason(
             "UserPermissionListResponse",
@@ -57,7 +57,7 @@ export function validateUserLoginResponse(content: unknown): asserts content is 
  * General
  */
 
-export function validateErrorWithReasonResponse(content: unknown): asserts content is ErrorWithReasonResponse {
+export function validateErrorWithReasonResponse(content: unknown): asserts content is ResponseWithErrorReason {
     if (!errorWithReasonResponseValidator(content)) {
         throw ApiSchemaValidationError.fromTypeNameAndReason(
             "ErrorWithReasonResponse",
@@ -89,7 +89,7 @@ export function validateSearchResponse(content: unknown): asserts content is Sea
  */
 
 
-export function validateEnglishWordResponse(content: unknown): asserts content is EnglishWordResponse {
+export function validateEnglishWordResponse(content: unknown): asserts content is EnglishWordInfoResponse {
     if (!englishWordResponseValidator(content)) {
         throw ApiSchemaValidationError.fromTypeNameAndReason(
             "EnglishWordResponse",

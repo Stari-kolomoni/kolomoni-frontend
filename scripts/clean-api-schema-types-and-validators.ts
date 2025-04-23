@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
 import { stdin, stdout } from "node:process";
 import * as readline from "node:readline/promises";
-import { OPENAPI_SCHEMA_OUTPUT_FILE_PATH, VALIDATION_DIRECTORY_PATH } from "./shared/paths";
+import { OPENAPI_SCHEMA_OUTPUT_FILE_PATH, VALIDATORS_DIRECTORY_PATH } from "./shared/paths";
 
 async function main() {
     console.log("This script CAN BE DESTRUCTIVE!");
@@ -13,7 +13,7 @@ async function main() {
     console.log();
     console.log("The script will do the following:");
     console.log(" - remove the \"validation\" directory that contains the JSON schemas and ajv validators");
-    console.log(`   (at "${VALIDATION_DIRECTORY_PATH}")`);
+    console.log(`   (at "${VALIDATORS_DIRECTORY_PATH}")`);
     console.log(" - remove the TypeScript types that were generated from the OpenAPI schema");
     console.log(`   (at "${OPENAPI_SCHEMA_OUTPUT_FILE_PATH}")`);
     console.log();
@@ -30,7 +30,7 @@ async function main() {
     // Remove validation directory that contains the JSON schemas and ajv validators.
     console.log("Removing validation directory.");
     await fs.rm(
-        VALIDATION_DIRECTORY_PATH,
+        VALIDATORS_DIRECTORY_PATH,
         {
             force: true,
             recursive: true,

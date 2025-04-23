@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { Api } from "$lib/api";
-    import type { EnglishWord, SloveneWord } from "$lib/api/schemaTypes";
+    import type { EnglishWord, SearchedWordMeaning, SloveneWord } from "$lib/api/schemaTypes";
     import { Input } from "$lib/components/atoms/input";
     import { userAuthenticationContext } from "$lib/contexts";
     import Logger, { CommonColors } from "$lib/logger";
@@ -34,11 +34,14 @@
     const loginStateStore = userAuthenticationContext.get();
 
 
+    type DestinationUrl = {
+        destination_url: string
+    };
+
+    type ParsedSearchResult = SearchedWordMeaning & DestinationUrl;
+
     let searchText: string = $state("");
-    let searchResultsStore: Writable<null | {
-        english: EnglishWord[],
-        slovene: SloveneWord[],
-    }> = writable(null);
+    let searchResultsStore: Writable<null | ParsedSearchResult[]> = writable(null);
 
     async function performUnthrottledSearch() {
         log.info(`User is searching for: ${searchText}`);
@@ -53,29 +56,32 @@
         
         const searchResults = await api.search(searchText);
 
+        const parsedSearchResults: ParsedSearchResult[] = [];
+
         log.info("Got search results:");
-        for (const englishResult of searchResults.search_results.english_results) {
-            log.info(` - (en) ${englishResult.lemma}`)
+        for (const searchResult of searchResults.word_meanings) {
+            if (searchResult.type === "slovene") {
+                log.info(` - (sl) ${searchResult.word.lemma}`);
+                parsedSearchResults.push({
+                    ...searchResult,
+                    destination_url: `/slovar/sl/${searchResult.word.lemma}:${searchResult.word.id}`
+                })
+            } else if (searchResult.type === "english") {
+                log.info(` - (en) ${searchResult.word.lemma}`);
+                parsedSearchResults.push({
+                    ...searchResult,
+                    destination_url: `/slovar/en/${searchResult.word.lemma}:${searchResult.word.id}`
+                })
+            }
         }
-        for (const sloveneResult of searchResults.search_results.slovene_results) {
-            log.info(` - (sl) ${sloveneResult.lemma}`)
-        }
 
-        searchResultsStore.set({
-            english: searchResults.search_results.english_results,
-            slovene: searchResults.search_results.slovene_results,
-        });
+        searchResultsStore.set(parsedSearchResults);
     }
 
-    async function goToEnglishWord(englishWordLemma: string): Promise<void> {
-        await goto("/slovar/en/" + englishWordLemma);
-    }
 
-    async function goToSloveneWord(sloveneWordLemma: string): Promise<void> {
-        await goto("/slovar/sl/" + sloveneWordLemma);
-    }
-
-    let performThrottledSearch = curryAsyncCallbackWithThrottling(performUnthrottledSearch, 50);
+    // TODO This needs to be optimized: the current throttling system mostly does duplicates lookups 80ms apart.
+    // We should instead set a throttle, but only repeat the HTTP request if the search term changed in those 80ms.
+    let performThrottledSearch = curryAsyncCallbackWithThrottling(performUnthrottledSearch, 80);
 </script>
 
 
@@ -92,28 +98,70 @@
         <!-- results will be loaded here -->
 
         {#if $searchResultsStore !== null}
-            {#each $searchResultsStore.english as englishWord}
-                <button 
+            {#each $searchResultsStore as searchResult}
+                {#if searchResult.type === "english"}
+                <a 
                     class="km_search-result km_search_english-result"
-                    onclick={() => goToEnglishWord(englishWord.lemma)}
-                    tabindex="0"
+                    href={searchResult.destination_url}
                 >
-                    <span class="km_search-result_lemma">
-                        {englishWord.lemma}
+                    <span class="search-result__entry-row">
+                        <span class="search-result__lemma">
+                            {searchResult.word.lemma}
+                        </span>
+                        
+                        {#if searchResult.word_meaning.abbreviation !== null}
+                        <span class="search-result__abbreviation">
+                            {searchResult.word_meaning.abbreviation}
+                        </span>
+                        {/if}
+                        
+                        {#if searchResult.word_meaning.disambiguation !== null}
+                        <span class="search-result__disambiguation">
+                            ({searchResult.word_meaning.disambiguation})
+                        </span>
+                        {/if}
                     </span>
-                </button>
-            {/each}
 
-            {#each $searchResultsStore.slovene as sloveneWord}
-                <button
-                    class="km_search-result km_search_slovene-result"
-                    onclick={() => goToSloveneWord(sloveneWord.lemma)}
-                    tabindex="0"
-                >
-                    <span class="km_search-result_lemma">
-                        {sloveneWord.lemma}
+                    {#if searchResult.word_meaning.description !== null}
+                    <span class="search-result__entry-row">
+                        <span class="search-result__description">
+                            {searchResult.word_meaning.description}
+                        </span>
                     </span>
-                </button>
+                    {/if}
+                </a>
+                {:else if searchResult.type === "slovene"}
+                <a 
+                    class="km_search-result km_search_slovene-result"
+                    href={searchResult.destination_url}
+                >
+                    <span class="search-result__entry-row">
+                        <span class="search-result__lemma">
+                            {searchResult.word.lemma}
+                        </span>
+                        
+                        {#if searchResult.word_meaning.abbreviation !== null}
+                        <span class="search-result__abbreviation">
+                            {searchResult.word_meaning.abbreviation}
+                        </span>
+                        {/if}
+                        
+                        {#if searchResult.word_meaning.disambiguation !== null}
+                        <span class="search-result__disambiguation">
+                            ({searchResult.word_meaning.disambiguation})
+                        </span>
+                        {/if}
+                    </span>
+
+                    {#if searchResult.word_meaning.description !== null}
+                    <span class="search-result__entry-row">
+                        <span class="search-result__description">
+                            {searchResult.word_meaning.description}
+                        </span>
+                    </span>
+                    {/if}
+                </a>
+                {/if}
             {/each}
         {/if}
 

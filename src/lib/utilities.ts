@@ -135,7 +135,6 @@ export function mergeBaseWithOptionalCssClasses(
 
 
 export function curryAsyncCallbackWithThrottling<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     C extends (...args: any[]) => Promise<void>
 >(
     callback: C,

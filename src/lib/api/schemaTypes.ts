@@ -1,17 +1,19 @@
-import type { components, paths } from "./auto-generated/openApiSchema";
+import type { components } from "./auto-generated/openApiSchema";
 
-export type UserInformationResponse = paths["/users/me"]["get"]["responses"]["200"]["content"]["application/json"];
-export type UserPermissionListResponse = paths["/users/me/permissions"]["get"]["responses"]["200"]["content"]["application/json"];
+type schemas = components["schemas"];
 
-export type UserLoginRequest = paths["/login"]["post"]["requestBody"]["content"]["application/json"];
-export type UserLoginResponse = paths["/login"]["post"]["responses"]["200"]["content"]["application/json"];
 
-export type ErrorWithReasonResponse = components["schemas"]["ErrorReasonResponse"];
+export type UserInfoResponse = schemas["UserInfoResponse"];
+export type UserPermissionsResponse = schemas["UserPermissionsResponse"];
 
-export type SearchRequest = paths["/dictionary/search"]["get"]["requestBody"]["content"]["application/json"];
-export type SearchResponse = paths["/dictionary/search"]["get"]["responses"]["200"]["content"]["application/json"];
+export type UserLoginRequest = schemas["UserLoginRequest"];
+export type UserLoginResponse = schemas["UserLoginResponse"];
 
-export type EnglishWordResponse = paths["/dictionary/english/{word_uuid}"]["get"]["responses"]["200"]["content"]["application/json"];
-export type EnglishWord = components["schemas"]["EnglishWord"];
+export type SearchRequest = schemas["SearchRequest"];
+export type SearchResponse = schemas["SearchResponse"];
+export type SearchedWordMeaning = schemas["SearchedWordMeaning"];
 
-export type SloveneWord = components["schemas"]["SloveneWord"];
+export type EnglishWordInfoResponse = schemas["EnglishWordInfoResponse"];
+export type EnglishWord = schemas["EnglishWord"];
+
+export type SloveneWord = schemas["SloveneWord"];

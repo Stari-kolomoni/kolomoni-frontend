@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import type { PageData } from "./$types";
 
     interface Props {
@@ -8,6 +9,24 @@
     let { data }: Props = $props();
 
     let word = $derived(data.wordInfo.word);
+
+    onMount(() => {
+        const updatedHealedUrl = new URL(window.location.href);
+
+        const lastSlashIndex = updatedHealedUrl.pathname.lastIndexOf("/")
+        const pathWithoutLastSegment = updatedHealedUrl.pathname.slice(0, lastSlashIndex + 1);
+        const healedLastSegment = `${data.wordInfo.word.lemma}:${data.wordInfo.word.id}`;
+
+        updatedHealedUrl.pathname = pathWithoutLastSegment + healedLastSegment;
+
+        console.log("Healed URL "  + window.location.href.toString() + " to: " + updatedHealedUrl.toString());
+
+        history.replaceState(
+            history.state,
+            '',
+            updatedHealedUrl,
+        );
+    });
 </script>
 
 
