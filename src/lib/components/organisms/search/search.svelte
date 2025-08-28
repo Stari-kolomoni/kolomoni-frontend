@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
+    import { SearchIcon } from "@indaco/svelte-iconoir/search";
     import { Api } from "$lib/api";
-    import type { EnglishWord, SearchedWordMeaning, SloveneWord } from "$lib/api/schemaTypes";
+    import type { SearchedWordMeaning } from "$lib/api/schemaTypes";
     import { Input } from "$lib/components/atoms/input";
     import { userAuthenticationContext } from "$lib/contexts";
     import Logger, { CommonColors } from "$lib/logger";
@@ -13,15 +13,26 @@
     interface Props {
         class?: string | null;
         inputClassName?: string | null;
+        inputContainerClassName?: string | null;
     }
 
-    let { class: className = null, inputClassName = null }: Props = $props();
+    let { 
+        class: className = null,
+        inputClassName = null,
+        inputContainerClassName = null
+    }: Props = $props();
 
 
     const baseSearchClassName = "km_search";
     const finalSearchClassName = mergeBaseWithOptionalCssClasses(
         baseSearchClassName,
         className
+    );
+
+    const baseInputContainerClassName = "km_search_input_container";
+    const finalInputContainerClassName = mergeBaseWithOptionalCssClasses(
+        baseInputContainerClassName,
+        inputContainerClassName
     );
 
     const baseInputClassName = "km_search_input";
@@ -86,15 +97,19 @@
 
 
 <div class={finalSearchClassName}>
-    <Input
-        type="text"
-        placeholder="Poišči besedo"
-        class={finalInputClassName}
-        bind:value={searchText}
-        on:input={performThrottledSearch}
-    />
+    <div class={finalInputContainerClassName} class:has-results={$searchResultsStore !== null && $searchResultsStore.length > 0}>
+        <SearchIcon class="km_search_input_icon" />
 
-    <div class="km_search_results">
+        <Input
+            type="text"
+            placeholder="Poišči besedo"
+            class={finalInputClassName}
+            bind:value={searchText}
+            on:input={performThrottledSearch}
+        />
+    </div>
+
+    <div class="km_search_results" class:visible={$searchResultsStore !== null && $searchResultsStore.length > 0}>
         <!-- results will be loaded here -->
 
         {#if $searchResultsStore !== null}

@@ -1,6 +1,6 @@
 import { PUBLIC_BASE_API_URL } from "$env/static/public";
 import { MissingAuthenticationError, StatusCodeError } from "$lib/errors";
-import type { EnglishWordInfoResponse, SearchRequest, SearchResponse, UserInfoResponse, UserLoginRequest, UserLoginResponse } from "./schemaTypes";
+import type { CategoriesResponse, EnglishWordInfoResponse, SearchRequest, SearchResponse, UserInfoResponse, UserLoginRequest, UserLoginResponse } from "./schemaTypes";
 
 export class AmbientApiParameters {
     public readonly fetcher: typeof fetch;
@@ -223,6 +223,22 @@ export class Api {
 
         const responseJson = await response.json() as UserInfoResponse;
         // validateUserInformationResponse(responseJson);
+
+        return responseJson;
+    }
+
+    public async getAllWordMeaningCategories(): Promise<CategoriesResponse> {
+        const response = await fetchWithContext(
+            this.ambientApiParameters,
+            this.userAuthentication,
+            {
+                endpoint: "/dictionary/category",
+                method: "GET",
+                includeAccessToken: false,
+            }
+        );
+
+        const responseJson = await response.json() as CategoriesResponse;
 
         return responseJson;
     }

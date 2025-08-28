@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "$lib/style/colors" as colors;
 @use "$lib/style/fonts" as fonts;
 
@@ -19,31 +20,162 @@
 }
 
 
-
-.km_word-en {
-    display: grid;
-    grid-template-rows:
-        [lemma] 1fr
-        [description] 3fr;
-    grid-template-columns:
-        [full] 1fr;
+.km_word {
     margin: 4px;
-    padding: 8px 6px;
+    padding: 10px 14px;
+
+    &__introduction {
+        font-weight: bold;
+        margin-bottom: 18px;
+    }
 }
 
-.km_word-en_lemma {
-    grid-row: lemma / span 1;
-    grid-column: full / span 1;
-    align-self: flex-start;
-    font-family: fonts.$font-family-primary;
-    font-size: fonts.$font-size-h3;
+.km_word-meaning {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    padding: 8px 10px 16px;
+    background-color: colors.$word-meaning-container-background;
+    border: 2px solid colors.$word-meaning-container-border;
+    border-radius: 2px;
+
+    &:not(:last-of-type) {
+        margin-bottom: 16px;
+    }
+
+
+    .word-meaning__top-line {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: baseline;
+
+        .lemma {
+            font-family: fonts.$font-family-primary;
+            font-size: fonts.$font-size-h3;
+        }
+
+        .extra-info {
+            font-family: fonts.$font-family-primary;
+            font-size: fonts.$font-size-h5;
+            vertical-align: sub;
+            opacity: 0.6;
+            margin-left: 10px;
+            line-height: 1;
+        }
+    }
+
+    .word-meaning__body {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+
+        .description {
+            margin: 8px 0;
+        }
+
+        .categories {
+            display: flex;
+            flex-direction: row;
+            justify-content: end;
+            margin: 10px 2px;
+
+            .category {
+                padding: 4px 8px;
+                border-radius: 3px;
+                outline: 1px solid colors.$category-outline-color;
+                font-size: fonts.$font-size-overline;
+            }
+        }
+    }
+
+    .word-meaning__named-separator {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin: 18px 0 12px;
+
+        .horizontal-line {
+            display: inline-block;
+            width: 44px;
+            height: 1px;
+            background-color: color.adjust(colors.$body-text, $lightness: 15%);
+        }
+
+        .separator-label {
+            font-size: fonts.$font-size-alt-text;
+            color: color.adjust(colors.$body-text, $lightness: 15%);
+            margin: 0 8px;
+        }
+    }
+
+    .word-meaning__translations {
+        .translation {
+            outline-width: 1px;
+            outline-style: solid;
+            padding: 4px 6px;
+            border-radius: 2px;
+            text-decoration: none;
+
+            &__lemma {
+                font-family: fonts.$font-family-secondary;
+                font-size: fonts.$font-size-body-text;
+                color: inherit;
+            }
+
+            &__extra-info {
+                color: inherit;
+            }
+        }
+
+        .translation--slovene {
+            outline-color: color.adjust(colors.$primary-dark, $lightness: 15%);
+            background-color: color.adjust(colors.$primary, $lightness: 24%);
+            color: color.adjust(colors.$primary-darker, $lightness: -20%, $saturation: -15%);
+
+            .translation__extra-info {
+                font-family: fonts.$font-family-primary;
+                font-size: fonts.$font-size-alt-text;
+                opacity: 0.6;
+            }
+        }
+    }
 }
 
-.km_word-en_description {
-    grid-row: description / span 1;
-    grid-column: full / span 1;
-    align-self: flex-start;
-}
+// .km_word-meaning-separator {
+//     width: 100%;
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: center;
+//     align-items: center;
+//     position: relative;
+//     margin: 32px 0 24px;
+
+//     &__horizontal-line {
+//         width: calc(100% - 32px);
+//         height: 2px;
+//         background-color: color.adjust(colors.$background-elevated-border);
+//     }
+// }
+
+// .km_word__lemma {
+//     grid-row: lemma / span 1;
+//     grid-column: full / span 1;
+//     align-self: flex-start;
+//     font-family: fonts.$font-family-primary;
+//     font-size: fonts.$font-size-h3;
+// }
+
+// .km_word-en_description {
+//     grid-row: description / span 1;
+//     grid-column: full / span 1;
+//     align-self: flex-start;
+// }
 
 
 

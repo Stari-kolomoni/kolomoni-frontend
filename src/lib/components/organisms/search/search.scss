@@ -1,15 +1,53 @@
 @use "sass:color";
 @use "$lib/style/colors" as colors;
 
+.km_search_input_container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-shadow: 0 0 0 2px colors.$background-elevated inset;
+    outline: 2px solid colors.$background-elevated-border;
+    background-color: colors.$background-elevated;
+    border-radius: 6px;
+
+    &.has-results {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
+.km_search_input_icon {
+    position: absolute;
+    margin-left: 10px;
+    pointer-events: none;
+    width: 18px;
+    height: 18px;
+}
+
 .km_search_input {
     width: 100%;
     height: 100%;
+    margin-left: calc(10px + 18px);
+    border: none;
+    outline: none;
+    background-color: transparent;
+    box-shadow: none;
 }
 
 .km_search_results {
     display: flex;
     flex-direction: column;
-    border: 1px solid color.adjust(colors.$body-text-even-lighter, $alpha: -0.2);
+    position: relative;
+
+    // border: 1px solid color.adjust(colors.$body-text-even-lighter, $alpha: -0.2);
+    outline: 2px solid colors.$background-elevated-border;
+    background-color: colors.$background-elevated;
+    visibility: hidden;
+
+    &.visible {
+        visibility: visible;
+    }
 }
 
 .km_search-result {
@@ -18,7 +56,7 @@
     height: calc(1.8rem + 4px * 2);
     cursor: pointer;
     text-decoration: none;
-    padding: 4px;
+    padding: 6px 8px;
     display: flex;
     flex-direction: row;
     justify-content: start;

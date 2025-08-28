@@ -1,4 +1,3 @@
-import { goto, replaceState } from "$app/navigation";
 import { Api, UserAuthentication } from "$lib/api";
 import type { EnglishWordInfoResponse } from "$lib/api/schemaTypes";
 import type { PageLoad } from "./$types";
@@ -59,7 +58,7 @@ function parseSlug(slug: string): ParsedSlug {
 }
 
 
-export const load: PageLoad = async ({ params, fetch, parent, url }) => {
+export const load: PageLoad = async ({ params, fetch, parent }) => {
     const parsedSlug = parseSlug(params.slug);
 
     const accessToken = (await parent()).accessToken;
