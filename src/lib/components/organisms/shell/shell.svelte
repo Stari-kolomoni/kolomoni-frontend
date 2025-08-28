@@ -40,14 +40,14 @@
 <div class="km_shell">
     {#if header}
         <header class={finalHeaderClasses}>
-            {@render header?.()}
+            {@render header()}
         </header>
     {/if}
 
     <div class="km_shell_primary-container">
         {#if sidebar}
             <aside class={finalSidebarClasses}>
-                {@render sidebar?.()}
+                {@render sidebar()}
             </aside>
         {/if}
 
@@ -58,7 +58,7 @@
 
     {#if footer}
         <footer class="km_shell_footer">
-            {@render footer?.()}
+            {@render footer()}
         </footer>
     {/if}
 </div>

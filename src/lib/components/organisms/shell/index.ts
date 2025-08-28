@@ -1,1 +1,1 @@
-export { default as Shell } from "./shell.svelte";
+export { default as Shell } from "./Shell.svelte";

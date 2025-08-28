@@ -6,7 +6,7 @@
 .km_sidebar {
     position: relative;
     height: 100%;
-    width: 150px;
+    width: 100px;
     display: flex;
     flex-direction: column;
     place-content: center flex-start;
@@ -27,11 +27,12 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    margin-bottom: 12px;
 }
 
 
 .km_sidebar_kolomoni-icon {
-    width: auto;
+    max-width: 54px;
     height: auto;
     margin: 24px 18px 0;
     padding: 4px;
@@ -42,33 +43,66 @@
     font-family: fonts.$font-family-primary;
     font-variant: small-caps;
     font-size: fonts.$font-size-body-text;
-    font-weight: bold;
-    margin: 0 8px 24px;
+    font-weight: 700;
+    margin: 8px 8px 24px;
+    text-align: center;
+    line-height: 1.1;
+    letter-spacing: 0;
+}
+
+
+.km_sidebar_item-list-container {
+    margin: 12px 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 
 .km_sidebar_item-list {
     width: 100%;
-
-    &:last-child {
-        border-bottom: 1px solid colors.$sidebar-border;
-    }
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
 }
 
 .km_sidebar_item {
-    height: 40px;
+    min-height: 40px;
+    margin: 0 6px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-top: 1px solid colors.$sidebar-border;
-    background-color: colors.$sidebar-background;
+    padding: 10px 4px;
+
+    // background-color: colors.$sidebar-inactive-item-background;
+    // border: 1px solid colors.$sidebar-inactive-item-border;
+    border-radius: 5px;
     transition: .2s ease;
     cursor: pointer;
     text-decoration: none;
-    color: colors.$body-text;
+    font-size: fonts.$font-size-alt-text;
+
+    &__label {
+        color: inherit;
+        font-size: inherit;
+        margin-top: 2px;
+    }
+}
+
+.km_sidebar_item:not(.active) {
+    color: colors.$sidebar-inactive-item-text-color;
+    border: 1px solid transparent;
 
     &:hover {
         background-color: colors.$sidebar-background-hovered;
     }
+}
+
+.km_sidebar_item.active {
+    background-color: colors.$sidebar-active-item-background;
+    border: 1px solid colors.$sidebar-active-item-border;
+    color: colors.$sidebar-active-item-text-color;
 }
