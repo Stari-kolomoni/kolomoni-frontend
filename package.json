@@ -45,6 +45,6 @@
 	"packageManager": "yarn@4.9.1",
 	"dependencies": {
 		"@indaco/svelte-iconoir": "^7.11.1",
-		"bits-ui": "2.9.4"
+		"bits-ui": "2.14.1"
 	}
 }
