@@ -3,6 +3,8 @@ import type { components } from "./auto-generated/openApiSchema";
 type schemas = components["schemas"];
 
 
+export type ResponseWithErrorReason = schemas["ResponseWithErrorReason"];
+
 export type UserInfoResponse = schemas["UserInfoResponse"];
 export type UserPermissionsResponse = schemas["UserPermissionsResponse"];
 
@@ -11,7 +13,9 @@ export type UserLoginResponse = schemas["UserLoginResponse"];
 
 export type SearchRequest = schemas["SearchRequest"];
 export type SearchResponse = schemas["SearchResponse"];
-export type SearchedWordMeaning = schemas["SearchedWordMeaning"];
+export type WordSearchResult = schemas["WordSearchResult"];
+export type ScoredEnglishWordMeaningWithDetails = schemas["ScoredEnglishWordMeaningWithDetails"];
+export type ScoredSloveneWordMeaningWithDetails = schemas["ScoredSloveneWordMeaningWithDetails"];
 
 export type EnglishWordInfoResponse = schemas["EnglishWordInfoResponse"];
 export type EnglishWord = schemas["EnglishWord"];

@@ -1,5 +1,9 @@
 <script lang="ts">
+    import { page } from "$app/state";
     import { Search } from "$lib/components/organisms/search";
+    import type { LayoutProps } from "./$types";
+
+    const { data: layoutData }: LayoutProps = $props();
 </script>
 
 <div class="km_homepage">
@@ -8,5 +12,6 @@
 
     <Search
         class="km_homepage_search"
+        availableCategories={layoutData.availableCategories}
     />
 </div>

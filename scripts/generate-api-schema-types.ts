@@ -7,7 +7,7 @@ import * as fsPromises from "node:fs/promises";
 import OpenApiTypeScript, { astToString } from "openapi-typescript";
 import { ESLint } from "eslint";
 
-import { executeWithStdoutCapture, pathExists } from "./shared/utilities";
+import { pathExists } from "./shared/utilities";
 import { OPENAPI_SCHEMA_OUTPUT_FILE_PATH, REPOSITORY_ROOT_DIRECTORY_PATH } from "./shared/paths";
 
 

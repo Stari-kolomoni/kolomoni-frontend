@@ -84,8 +84,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List all word categories
-         * @description This endpoint will list all word categories.
+         * List all word meaning categories
+         * @description This endpoint will list all word meaning categories.
          *
          *     # Authentication
          *     This endpoint does not require authentication.
@@ -96,7 +96,7 @@ export interface paths {
         put?: never;
         /**
          * Create a new category
-         * @description This endpoint will create a new word category.
+         * @description This endpoint will create a new word meaning category.
          *
          *     # Authentication
          *     This endpoint requires authentication and the `category:create` permission.
@@ -1249,20 +1249,13 @@ export interface components {
         ResponseWithErrorReason: {
             reason: components["schemas"]["ErrorReason"];
         };
-        SearchedWordMeaning: {
+        ScoredEnglishWordMeaningWithDetails: components["schemas"]["EnglishWordMeaningWithDetails"] & {
             /** Format: float */
-            result_score: number;
-            /** @enum {string} */
-            type: "english";
-            word: components["schemas"]["EnglishWord"];
-            word_meaning: components["schemas"]["EnglishWordMeaningWithDetails"];
-        } | {
+            score: number;
+        };
+        ScoredSloveneWordMeaningWithDetails: components["schemas"]["SloveneWordMeaningWithDetails"] & {
             /** Format: float */
-            result_score: number;
-            /** @enum {string} */
-            type: "slovene";
-            word: components["schemas"]["SloveneWord"];
-            word_meaning: components["schemas"]["SloveneWordMeaningWithDetails"];
+            score: number;
         };
         /** @example {
          *       "search_query": "hit points"
@@ -1272,7 +1265,7 @@ export interface components {
             search_query: string;
         };
         SearchResponse: {
-            word_meanings: components["schemas"]["SearchedWordMeaning"][];
+            search_results: components["schemas"]["WordSearchResult"][];
         };
         SloveneTranslation: {
             /** Format: date-time */
@@ -1676,6 +1669,35 @@ export interface components {
         } | {
             /** @enum {string} */
             "word-error-type": "identical-word-meaning-already-exists";
+        };
+        WordSearchResult: {
+            /**
+             * Format: float
+             * @description Cumulative word match score considering all the matched
+             *     word meanings of this word.
+             */
+            cumulative_score: number;
+            /** @enum {string} */
+            type: "english";
+            word: components["schemas"]["EnglishWord"];
+            /** @description Note that this array won't always contain all the meanings
+             *     associated with the given word, because some meanings might
+             *     just not match for a given search term. */
+            word_meanings: components["schemas"]["ScoredEnglishWordMeaningWithDetails"][];
+        } | {
+            /**
+             * Format: float
+             * @description Cumulative word match score considering all the matched
+             *     word meanings of this word.
+             */
+            cumulative_score: number;
+            /** @enum {string} */
+            type: "slovene";
+            word: components["schemas"]["SloveneWord"];
+            /** @description Note that this array won't always contain all the meanings
+             *     associated with the given word, because some meanings might
+             *     just not match for a given search term. */
+            word_meanings: components["schemas"]["ScoredSloveneWordMeaningWithDetails"][];
         };
     };
     responses: never;
@@ -4101,6 +4123,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    /** @example {
+                     *       "ok": true
+                     *     } */
                     "application/json": components["schemas"]["PingResponse"];
                 };
             };
@@ -4169,6 +4194,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    /** @example {
+                     *       "user": {
+                     *         "display_name": "Janez Novak",
+                     *         "id": "01921e6d-a0cb-724c-b8aa-31f5b4c78267",
+                     *         "joined_at": "2023-06-27T20:33:53.078789Z",
+                     *         "last_active_at": "2023-06-27T20:34:27.253746Z",
+                     *         "last_modified_at": "2023-06-27T20:34:27.217273Z",
+                     *         "username": "janeznovak"
+                     *       }
+                     *     } */
                     "application/json": components["schemas"]["UserInfoResponse"];
                 };
             };
@@ -4236,6 +4271,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    /** @example {
+                     *       "user": {
+                     *         "display_name": "Janez Novak Veliki",
+                     *         "id": "01921e73-08f4-7d7c-9e24-769ebe361edc",
+                     *         "joined_at": "2023-06-27T20:33:53.078789Z",
+                     *         "last_active_at": "2023-06-27T20:34:27.253746Z",
+                     *         "last_modified_at": "2023-06-27T20:44:27.217273Z",
+                     *         "username": "janeznovak"
+                     *       }
+                     *     } */
                     "application/json": components["schemas"]["UserDisplayNameChangeResponse"];
                 };
             };
@@ -4780,6 +4825,13 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    /** @example {
+                     *       "permissions": [
+                     *         "user.self:read",
+                     *         "user.self:write",
+                     *         "user.any:read"
+                     *       ]
+                     *     } */
                     "application/json": components["schemas"]["UserPermissionsResponse"];
                 };
             };
