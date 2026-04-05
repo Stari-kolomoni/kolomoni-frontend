@@ -1,0 +1,86 @@
+/**
+ * VARIABLES
+ */
+
+
+/*
+ * Colours
+ * This palette is copied from the V2 design palette. 
+ * See the kolomon-design repository for details.
+ */
+
+
+// Used as a while background color.
+$background-primary: #F8F6F2;
+
+// Used on top of $background-primary to signal elevation.
+$background-elevated: #FDFDFC;
+
+
+
+// Global black or possibly near black color.
+$black: #000;
+
+// Global white or possibly near white color.
+$white: #FDFDFC;
+
+
+
+// Primary body text color, very dark but not completely black.
+$body-text: #282517;
+
+// Secondary body text color that is slightly lighter than $body-text.
+$body-text-lighter: #555242;
+
+// Tertiary body text color that is even lighter than $body-text-lighter.
+$body-text-even-lighter: #777463;
+
+
+
+// Mostly used for visual separators on e.g. $background-primary or $background-elevated.
+$light-indicator: #BFBBA4;
+
+
+// Primary color in three shades, mostly representing slovene words.
+$primary: #E39148;
+$primary-dark: #C96E1D;
+$primary-even-darker: #B3641E;
+
+
+// Secondary color in three shades, mostly representing english words.
+$secondary: #CCB43B;
+$secondary-dark: #907E23;
+$secondary-even-darker: #756515;
+
+
+
+// Generic success color.
+$success: #AED22C;
+
+// Generic error color.
+$error: #E64834;
+
+
+// Used in the header / sidebar / etc. to visually separate it from the main section.
+$header-background: #ECE7DF;
+$header-background-darker: #D6C9B8;
+
+
+
+/*
+ * Button styles
+ */
+
+$button-default-background: #CFCBC1;
+$button-alt-background: #5D5C55;
+$button-primary-background: #C86E1D;
+$button-secondary-background: #8C7A22;
+
+
+
+/*
+ * Link styles
+ */
+
+$link-blue: #0371D0;
+$link-dark-blue: #2B4488;

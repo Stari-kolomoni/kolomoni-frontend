@@ -1,0 +1,67 @@
+/*
+ * Kolomon Design System: forms and form elements
+ * This partial contains styles for forms and their contents (user inputs and similar).
+ */
+@use "../variables" as var;
+@use "./typography" as typography;
+@use "../modules/common" as c;
+@use "../modules/animations" as anim;
+
+// This is the <form> element
+.km-form {
+    margin: 12px 0;
+    padding: 8px;
+}
+
+// This is a div that contains both .km-label and .km-input
+.km-input-label-container {
+    @include c.flex-column-center(false, true);
+}
+
+// This is the label before a .km-input
+.km-label {
+    align-self: self-start;
+    font-family: typography.$font-family-secondary;
+    font-size: typography.$font-size-alt-text;
+    color: lighten(var.$body-text, 6%);
+    letter-spacing: .1px;
+    font-weight: 600;
+    margin-left: 2px;
+    margin-bottom: 2px;
+    transition: color .1s ease-out;
+}
+
+// Darken the label when input is focused
+.km-input-label-container:focus-within .km-label {
+    color: var.$black;
+}
+
+// This is a text/email/... input box
+.km-input {
+    display: inline-block;
+    position: relative;
+    padding: 6px 9px;
+    margin: 8px 0 16px 0;
+    border: 1px solid var.$black;
+    border-radius: 2px;
+    box-shadow:
+        1px 1px 1px transparentize(var.$body-text, 0.75),
+        inset 1px 1px transparentize(var.$body-text, 0.9);
+
+    &:focus {
+        outline: 2px solid var.$secondary-dark;
+        outline-offset: -1px;
+    }
+
+    &:focus:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+// Make sure to disable margins on the input box when it has a label before it
+.km-label + .km-input {
+    margin-top: 0;
+}

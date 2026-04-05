@@ -1,0 +1,25 @@
+/*
+ * Kolomoni design system: base module
+ *
+ * This partial contains just the very base styles for the app.
+ */
+
+@use "../variables" as vars;
+
+* {
+    box-sizing: border-box;
+    text-rendering: optimizelegibility;
+}
+
+html, body {
+    height: 100%;
+    line-height: 1.6;
+}
+
+body {
+    background-color: vars.$background-primary;
+}
+
+#root {
+    height: 100%;
+}

@@ -1,0 +1,15 @@
+@use "page-base" as base;
+
+.page-login {
+    @include base.page-base();
+
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .kolomon-title {
+        letter-spacing: -6px;
+    }
+}

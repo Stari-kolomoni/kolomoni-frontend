@@ -1,0 +1,254 @@
+@use "../../variables" as vars;
+@use "../../modules/common" as common;
+@use "../../design-system/typography" as typography;
+
+.page-translation .content {
+    margin-top: 25px;
+}
+
+// Contains the english and slovene word and a horizontal separator
+.translation-container {
+    min-width: 650px;
+    max-width: 1050px;
+    min-height: 500px;
+}
+
+/*
+ * WORD BASE
+ */
+.word {
+    display: grid;
+
+    width: 100%;
+    margin: 25px 14px;
+
+    h5 {
+        margin: 2px 6px;
+    }
+
+    .word-name {
+        grid-area: title;
+
+        font-family: typography.$font-family-primary;
+        font-size: typography.$font-size-h3;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .word-description {
+        grid-area: description;
+
+        font-family: typography.$font-family-secondary;
+        font-size: typography.$font-size-larger-body-text;
+        font-weight: 500;
+
+        text-indent: 1rem;
+
+        padding: 6px 14px 4px 0;
+        margin-bottom: 10px;
+    }
+
+    // Second column
+    .word-links-container {
+        grid-area: linkcontainer;
+
+        // Defines a subgrid
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 0.4fr 1.6fr;
+        grid-template-areas:
+            "."
+            "links";
+
+        margin-bottom: 10px;
+
+        .word-links-inner-container {
+            grid-area: links;
+        }
+    }
+
+    .word-last-edit {
+        grid-area: edits;
+
+        #user-name {
+            font-style: italic;
+        }
+    }
+}
+
+/*
+ * COMMON RELATED STYLES
+ */
+// Base styles that are extended in specific styles
+%base-listed-word-style {
+    margin: 2px 5px;
+
+    font-family: typography.$font-family-secondary;
+    font-size: typography.$font-size-larger-body-text;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+}
+
+%slovene-word {
+    color: vars.$primary-even-darker;
+    text-decoration: underline transparentize(vars.$primary-dark, 0.7);
+}
+%slovene-word-hover {
+    color: vars.$primary-dark;
+    text-decoration: underline transparentize(vars.$primary-dark, 0.2);
+}
+
+%english-word {
+    color: vars.$secondary-even-darker;
+    text-decoration: underline transparentize(vars.$secondary-dark, 0.7);
+}
+%english-word-hover {
+    color: vars.$secondary-dark;
+    text-decoration: underline transparentize(vars.$secondary-dark, 0.2);
+}
+
+// Word links (each entry has an icon, a title and a domain)
+.word-links {
+    margin: 6px 0;
+
+    .link {
+        display: grid;
+        grid-template-columns: 0.25fr 1.5fr;
+        grid-template-rows: 1.1fr 0.9fr;
+        grid-template-areas:
+            "icon title"
+            "icon domain";
+
+        padding: 5px 6px;
+        border-radius: 3px;
+
+        font-family: typography.$font-family-secondary;
+        font-size: typography.$font-size-body-text;
+        font-weight: 500;
+        text-decoration: none;
+
+        background-color: transparent;
+        box-shadow: 0 1px 2px 0 transparent;
+
+        transition: .3s ease;
+
+        &:hover {
+            background-color: transparentize(vars.$header-background-darker, 0.7);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    .link-icon {
+        @include common.flex-row-center(true, true);
+        grid-area: icon;
+
+        svg, img {
+            max-width: 45px;
+            height: auto;
+        }
+    }
+
+    .link-title {
+        grid-area: title;
+    }
+
+    .link-domain {
+        grid-area: domain;
+
+        font-size: typography.$font-size-alt-text;
+        color: vars.$body-text-even-lighter;
+        line-height: 14px;
+        padding-left: 1px;
+    }
+}
+
+// Word suggestions (each suggestion has a word and related metadata)
+.word-suggestions {
+    margin-top: 6px;
+
+    .suggestion {
+        @extend %base-listed-word-style;
+
+        transition: .2s ease;
+        cursor: pointer;
+    }
+}
+
+.word-suggestions.slovene {
+    .suggestion {
+        @extend %slovene-word;
+
+        &:hover {
+            @extend %slovene-word-hover;
+        }
+    }
+}
+
+// Related words (each word has a name)
+.word-related {
+    margin-top: 6px;
+
+    .related {
+        @extend %base-listed-word-style;
+
+        transition: .2s ease;
+        cursor: pointer;
+    }
+}
+
+.word-related.english {
+    .related {
+        @extend %english-word;
+
+        &:hover {
+            @extend %english-word-hover;
+        }
+    }
+}
+
+/*
+ * ENGLISH WORD
+ */
+.word--english {
+    grid-template-columns: 60% 40%;
+    grid-template-rows: 0.6fr 1.8fr 1.1fr 1fr 0.5fr;
+    grid-template-areas:
+        "title linkcontainer"
+        "description linkcontainer"
+        "suggestions state"
+        "related state"
+        ". edits";
+
+    .word-name {
+        color: vars.$secondary-even-darker;
+    }
+
+    .word-suggestions-container {
+        grid-area: suggestions;
+    }
+
+    .word-related-container {
+        grid-area: related;
+    }
+
+    .word-state-container {
+        grid-area: state;
+    }
+}
+
+/*
+ * SLOVENE WORD
+ */
+.word--slovene {
+    grid-template-columns: 60% 40%;
+    grid-template-rows: 0.6fr 2fr 1.3fr 0.6fr;
+    grid-template-areas:
+        "title linkcontainer"
+        "description linkcontainer"
+        "related ."
+        ". edits";
+
+    .word-name {
+        color: vars.$primary-dark;
+    }
+}

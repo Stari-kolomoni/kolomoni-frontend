@@ -1,0 +1,120 @@
+/*
+ * Kolomoni design system: buttons module
+ */
+
+@use "sass:math";
+@use "sass:color";
+
+@use "../variables" as vars;
+@use "./typography" as typography;
+@use "../modules/animations" as anim;
+
+
+/*
+ * Global button configuration
+ */
+
+$button-focus-outline: 4px;
+
+$button-default-hover-background: color.scale(vars.$button-default-background, $lightness: 5%);
+
+/*
+ * END of global button configuration 
+ * (the rest are derived from existing values).
+ */
+
+
+$button-focus-border-width: math.div($button-focus-outline, 2);
+
+$button-focus-outer-offset: -1 * $button-focus-outline;
+
+
+// Base stylesheet for buttons of any type.
+// Use `@extend %km-button` to include this set of rules.
+%km-button {
+    position: relative;
+    border-radius: 2px;
+    padding: 12px 16px;
+    font-family: typography.$font-family-secondary;
+    font-size: typography.$font-size-body-text;
+    font-weight: bold;
+    cursor: pointer;
+    transition:
+        border none,
+        background-color .15s anim.$ease-in-out-circ;
+}
+
+
+// This mixin will generate a set of style rules that will 
+// make the button react to being focused.
+@mixin button-focus-style(
+    $background,
+    $hover-background,
+    $focus-outer-ring-background: $background,
+    $focus-inner-ring-background: vars.$white,
+) {
+    border: $button-focus-border-width solid $background;
+
+    &:hover {
+        border-color: $hover-background;
+    }
+
+    &:focus {
+        border-color: $focus-inner-ring-background;
+
+        &::after {
+            content: "";
+            position: absolute;
+            width: calc(100% + #{$button-focus-outline});
+            height: calc(100% + #{$button-focus-outline});
+            top: $button-focus-outer-offset;
+            left: $button-focus-outer-offset;
+            border: $button-focus-border-width solid $focus-outer-ring-background;
+        }
+    }
+}
+
+
+// Base CSS class of a button.
+.km-button {
+    // (default)
+    @include button-focus-style(vars.$button-default-background, $button-default-hover-background);
+    @extend %km-button;
+
+    color: vars.$body-text;
+    background-color: vars.$button-default-background;
+
+    &:hover {
+        background-color: $button-default-hover-background;
+    }
+
+    // TODO complete styles for other button types
+    &--alt {
+        // (alt)
+        @extend %km-button;
+
+        color: vars.$white;
+        background-color: vars.$button-alt-background;
+        border: none;
+    }
+
+
+    &--primary {
+        // (primary)
+        @extend %km-button;
+
+        color: vars.$white;
+        background-color: vars.$button-primary-background;
+        border: none;
+    }
+
+
+    &--secondary {
+        // (secondary)
+        @extend %km-button;
+
+        color: vars.$white;
+        background-color: vars.$button-secondary-background;
+        border: none;
+    }
+}
